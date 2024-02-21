@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
+import 'package:poll_and_play/providers/state.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget implements page.Page {
   const ProfilePage({super.key});
@@ -21,6 +24,13 @@ class ProfilePage extends StatelessWidget implements page.Page {
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    StateProvider stateProvider = Provider.of<StateProvider>(context, listen: false);
+
+    return MaterialButton(
+        onPressed: () {
+          FirebaseAuth.instance.signOut();
+          stateProvider.user = null;
+        },
+        child: const Text('Sign Out'));
   }
 }
