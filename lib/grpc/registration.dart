@@ -1,12 +1,12 @@
 import 'package:grpc/grpc.dart';
+import 'package:poll_and_play/grpc/authenticator.dart';
 import 'package:poll_play_proto_gen/public.dart';
-import 'package:poll_play_proto_gen/public/registration.pb.dart';
 
 class RegistrationClient {
   late RegistrationServiceClient _client;
 
-  RegistrationClient(String host) {
-    final channel = ClientChannel(host, options: const ChannelOptions(credentials: ChannelCredentials.insecure()),);
+  RegistrationClient(List<String> address) {
+    final channel = ClientChannel(address[0], port: int.parse(address[1]), options: const ChannelOptions(credentials: ChannelCredentials.insecure()),);
     _client = RegistrationServiceClient(channel);
   }
 
@@ -16,7 +16,7 @@ class RegistrationClient {
         name: name,
         email: email,
         firebaseId: firebaseID
-      ));
+      ), options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly
       print('Error on registration: $e');

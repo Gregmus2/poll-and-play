@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // todo make all properties for all classes private (which are not used outside) and add getters/setters if necessary
 
 class StateProvider extends ChangeNotifier {
+  // todo replace with user object and add steam id
   User? _user;
 
   StateProvider();

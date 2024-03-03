@@ -6,6 +6,9 @@ import 'package:poll_and_play/firebase_options.dart';
 import 'package:poll_and_play/grpc/friends.dart';
 import 'package:poll_and_play/grpc/registration.dart';
 import 'package:poll_and_play/grpc/user.dart';
+import 'package:poll_and_play/providers/friends.dart';
+import 'package:poll_and_play/providers/games.dart';
+import 'package:poll_and_play/providers/groups.dart';
 import 'package:poll_and_play/providers/state.dart';
 import 'package:provider/provider.dart';
 
@@ -21,17 +24,27 @@ Future<void> _runApp(Widget app) async {
   );
   StateProvider stateProvider = StateProvider();
   await stateProvider.init();
-  UserClient userClient = UserClient(GlobalConfig().userAddress);
-  FriendsClient friendsClient = FriendsClient(GlobalConfig().friendsAddress);
-  RegistrationClient registrationClient = RegistrationClient(GlobalConfig().registrationAddress);
+  UserClient userClient = UserClient(GlobalConfig().userAddress.split(':'));
+  FriendsProvider friendsProvider = FriendsProvider();
+  GroupsProvider groupsProvider = GroupsProvider();
+  RegistrationClient registrationClient = RegistrationClient(GlobalConfig().registrationAddress.split(':'));
+  GamesProvider gamesProvider = GamesProvider(stateProvider);
+
+  await Future.wait([
+    friendsProvider.init(),
+    groupsProvider.init(),
+    gamesProvider.init(),
+  ]);
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => stateProvider),
         Provider(create: (context) => userClient),
-        Provider(create: (context) => friendsClient),
+        ChangeNotifierProvider(create: (context) => friendsProvider),
         Provider(create: (context) => registrationClient),
+        ChangeNotifierProvider(create: (context) => gamesProvider),
+        ChangeNotifierProvider(create: (context) => groupsProvider),
       ],
       child: app,
     ),

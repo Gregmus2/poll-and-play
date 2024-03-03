@@ -5,6 +5,8 @@ class GlobalConfig {
   late String userAddress;
   late String friendsAddress;
   late String registrationAddress;
+  late String groupsAddress;
+  late String steamAPIKey;
 
   GlobalConfig._internal() {
     const String clientID = String.fromEnvironment('CLIENT_ID');
@@ -30,6 +32,18 @@ class GlobalConfig {
       throw AssertionError('REGISTRATION_ADDRESS is not set');
     }
     this.registrationAddress = registrationAddress;
+
+    const String groupsAddress = String.fromEnvironment('GROUPS_ADDRESS');
+    if (registrationAddress.isEmpty) {
+      throw AssertionError('GROUPS_ADDRESS is not set');
+    }
+    this.groupsAddress = groupsAddress;
+
+    const String steamAPIKey = String.fromEnvironment('STEAM_API_KEY');
+    if (steamAPIKey.isEmpty) {
+      throw AssertionError('STEAM_API_KEY is not set');
+    }
+    this.steamAPIKey = steamAPIKey;
   }
 
   factory GlobalConfig() {

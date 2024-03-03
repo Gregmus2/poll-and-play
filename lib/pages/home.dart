@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/events.dart';
 import 'package:poll_and_play/pages/friends.dart';
 import 'package:poll_and_play/pages/games.dart';
 import 'package:poll_and_play/pages/groups.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
-import 'package:poll_and_play/pages/profile.dart';
+import 'package:poll_and_play/providers/state.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,17 +22,29 @@ class _HomePageState extends State<HomePage> {
     FriendsPage(),
     EventsPage(),
     GamesPage(),
-    ProfilePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
+    StateProvider stateProvider = Provider.of<StateProvider>(context, listen: false);
 
     return Scaffold(
         appBar: AppBar(
           foregroundColor: Colors.white,
+          title: Text(FirebaseAuth.instance.currentUser!.displayName ?? "", style: Theme.of(context).textTheme.titleLarge),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Theme.of(context).iconTheme.color),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                stateProvider.user = null;
+              },
+            ),
+          ],
         ),
+        floatingActionButton: _pages[pageIndex].floatingActionButton(context),
         body: IndexedStack(
           index: pageIndex,
           children: _pages,

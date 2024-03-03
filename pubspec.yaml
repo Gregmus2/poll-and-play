@@ -44,6 +44,9 @@ dependencies:
     hosted: https://dart.cloudsmith.io/workspace-for-kostiantyn/poll-play-proto-gen
     version: ^0.0.3
   grpc: ^3.2.4
+  url_launcher: ^6.2.5
+  http: ^1.2.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
