@@ -48,5 +48,5 @@ Future<void> _signIn(BuildContext context) async {
   ]);
 
   // after user updates in state provider, it notify app page about that to rebuild body with HomePage
-  stateProvider.user = user.user;
+  stateProvider.initUser();
 }

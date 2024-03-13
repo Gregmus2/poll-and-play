@@ -1,28 +1,33 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:poll_and_play/config.dart';
+import 'package:poll_and_play/grpc/user.dart';
+import 'package:poll_play_proto_gen/public.dart' as proto;
 
 // todo make all properties for all classes private (which are not used outside) and add getters/setters if necessary
 
 class StateProvider extends ChangeNotifier {
-  // todo replace with user object and add steam id
-  User? _user;
+  final UserClient _client = UserClient(GlobalConfig().userAddress.split(':'));
+  proto.User? _user;
 
   StateProvider();
 
   Future<void> init() async {
-    _initUser();
+    await initUser();
   }
 
-  void _initUser() {
+  Future<void> initUser() async {
     if (FirebaseAuth.instance.currentUser != null) {
-      _user = FirebaseAuth.instance.currentUser;
+      _user = (await _client.getUser()).user;
     }
-  }
 
-  User? get user => _user;
-
-  set user(User? user) {
-    _user = user;
     notifyListeners();
   }
+
+  void resetUser() {
+    _user = null;
+    notifyListeners();
+  }
+
+  proto.User? get user => _user;
 }

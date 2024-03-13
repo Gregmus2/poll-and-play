@@ -28,7 +28,7 @@ Future<void> _runApp(Widget app) async {
   FriendsProvider friendsProvider = FriendsProvider();
   GroupsProvider groupsProvider = GroupsProvider();
   RegistrationClient registrationClient = RegistrationClient(GlobalConfig().registrationAddress.split(':'));
-  GamesProvider gamesProvider = GamesProvider(stateProvider);
+  GamesProvider gamesProvider = GamesProvider();
 
   await Future.wait([
     friendsProvider.init(),

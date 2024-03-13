@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/events.dart';
@@ -18,10 +19,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int pageIndex = 1;
   final List<page.Page> _pages = [
-    GroupsPage(),
-    FriendsPage(),
-    EventsPage(),
-    GamesPage(),
+    const GroupsPage(),
+    const FriendsPage(),
+    const EventsPage(),
+    const GamesPage(),
   ];
 
   @override
@@ -32,14 +33,21 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           foregroundColor: Colors.white,
-          title: Text(FirebaseAuth.instance.currentUser!.displayName ?? "", style: Theme.of(context).textTheme.titleLarge),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CachedNetworkImage(imageUrl: FirebaseAuth.instance.currentUser!.photoURL ?? "", width: 40, height: 40, fit: BoxFit.cover, placeholder: (context, url) => const CircularProgressIndicator()),
+              const SizedBox(width: 10),
+              Text(FirebaseAuth.instance.currentUser!.displayName ?? "", style: Theme.of(context).textTheme.titleLarge),
+            ],
+          ),
           centerTitle: true,
           actions: [
             IconButton(
               icon: Icon(Icons.logout, color: Theme.of(context).iconTheme.color),
               onPressed: () {
                 FirebaseAuth.instance.signOut();
-                stateProvider.user = null;
+                stateProvider.resetUser();
               },
             ),
           ],

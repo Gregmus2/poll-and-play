@@ -1,7 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:poll_and_play/api/steam.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
 import 'package:poll_and_play/providers/games.dart';
+import 'package:poll_play_proto_gen/public.dart';
 import 'package:provider/provider.dart';
 
 class GamesPage extends StatelessWidget implements page.Page {
@@ -41,7 +42,7 @@ class GamesPage extends StatelessWidget implements page.Page {
 }
 
 class GameTile extends StatelessWidget {
-  final SteamGame game;
+  final GameWithStat game;
   final bool isSelected;
 
   const GameTile({
@@ -56,14 +57,21 @@ class GameTile extends StatelessWidget {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
-        side: isSelected ? BorderSide(
-          color: Theme.of(context).colorScheme.primary,
-          width: 2,
-        ) : BorderSide.none,
+        side: isSelected
+            ? BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+                width: 2,
+              )
+            : BorderSide.none,
       ),
       elevation: 5,
       // todo add friends icons that have this game, name of the game
-      child: Image.network(game.capsuleURL ?? game.iconURL, fit: BoxFit.fill),
+      child: CachedNetworkImage(
+        imageUrl: game.game.capsuleUrl,
+        fit: BoxFit.fill,
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
     );
   }
 }

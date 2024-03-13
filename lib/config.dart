@@ -6,6 +6,7 @@ class GlobalConfig {
   late String friendsAddress;
   late String registrationAddress;
   late String groupsAddress;
+  late String gamesAddress;
   late String steamAPIKey;
 
   GlobalConfig._internal() {
@@ -38,6 +39,12 @@ class GlobalConfig {
       throw AssertionError('GROUPS_ADDRESS is not set');
     }
     this.groupsAddress = groupsAddress;
+
+    const String gamesAddress = String.fromEnvironment('GAMES_ADDRESS');
+    if (gamesAddress.isEmpty) {
+      throw AssertionError('GAMES_ADDRESS is not set');
+    }
+    this.gamesAddress = gamesAddress;
 
     const String steamAPIKey = String.fromEnvironment('STEAM_API_KEY');
     if (steamAPIKey.isEmpty) {

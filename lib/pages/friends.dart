@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fixnum/src/int64.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/grpc/friends.dart';
@@ -75,7 +76,7 @@ class FriendTile extends StatelessWidget {
         },
       ),
       leading: CircleAvatar(
-        foregroundImage: friend.avatar != "" ? NetworkImage(friend.avatar) : null,
+        foregroundImage: friend.avatar != "" ? CachedNetworkImageProvider(friend.avatar) : null,
         radius: 30,
       ),
       title: Text(friend.name, style: Theme.of(context).textTheme.bodyMedium),

@@ -1,7 +1,6 @@
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:poll_and_play/api/steam.dart';
 import 'package:poll_and_play/pages/games.dart';
 import 'package:poll_and_play/providers/friends.dart';
 import 'package:poll_and_play/providers/games.dart';
@@ -21,7 +20,7 @@ enum Target { group, users }
 class _EventCreatePageState extends State<EventCreatePage> {
   SelectedTarget _target = SelectedTarget(Target.group, []);
   DateTime _dateTime = DateTime.now();
-  List<SteamGame> _selectedGames = [];
+  List<GameWithStat> _selectedGames = [];
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +88,7 @@ class _EventCreatePageState extends State<EventCreatePage> {
 }
 
 class GamesSelection extends StatefulWidget {
-  final Function(List<SteamGame>) onGamesChanged;
+  final Function(List<GameWithStat>) onGamesChanged;
 
   const GamesSelection({
     super.key,
@@ -101,7 +100,7 @@ class GamesSelection extends StatefulWidget {
 }
 
 class _GamesSelectionState extends State<GamesSelection> {
-  final List<SteamGame> _selectedGames = [];
+  final List<GameWithStat> _selectedGames = [];
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +131,7 @@ class _GamesSelectionState extends State<GamesSelection> {
 }
 
 class SelectableGameTile extends StatefulWidget {
-  final SteamGame game;
+  final GameWithStat game;
   final Function(bool) onSelectionChanged;
 
   const SelectableGameTile({
