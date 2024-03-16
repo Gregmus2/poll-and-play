@@ -14,12 +14,12 @@ class FriendsPage extends StatelessWidget implements page.Page {
 
   @override
   Icon getIcon(BuildContext context) {
-    return Icon(Icons.people, color: Theme.of(context).iconTheme.color);
+    return const Icon(Icons.people);
   }
 
   @override
   Icon getUnselectedIcon(BuildContext context) {
-    return Icon(Icons.people_alt_outlined, color: Theme.of(context).iconTheme.color);
+    return const Icon(Icons.people_alt_outlined);
   }
 
   @override
@@ -30,25 +30,26 @@ class FriendsPage extends StatelessWidget implements page.Page {
   @override
   Widget? floatingActionButton(BuildContext context) => FloatingActionButton(
         onPressed: () => _showAddUserDialog(context),
-        child: Icon(
+        child: const Icon(
           Icons.add,
-          color: Theme.of(context).iconTheme.color,
         ),
       );
 
   @override
   Widget build(BuildContext context) {
-    // todo add some refresh option
     FriendsProvider provider = Provider.of<FriendsProvider>(context);
 
-    return ListView.builder(
-        itemCount: provider.friends.length,
-        itemBuilder: (context, index) => FriendTile(
-              friend: provider.friends[index],
-              onTap: () {
-                // todo open friend page (reuse user page)
-              },
-            ));
+    return RefreshIndicator(
+      onRefresh: provider.refresh,
+      child: ListView.builder(
+          itemCount: provider.friends.length,
+          itemBuilder: (context, index) => FriendTile(
+                friend: provider.friends[index],
+                onTap: () {
+                  // todo open friend page (reuse user page)
+                },
+              )),
+    );
   }
 }
 
@@ -79,7 +80,7 @@ class FriendTile extends StatelessWidget {
         foregroundImage: friend.avatar != "" ? CachedNetworkImageProvider(friend.avatar) : null,
         radius: 30,
       ),
-      title: Text(friend.name, style: Theme.of(context).textTheme.bodyMedium),
+      title: Text(friend.name),
     );
   }
 }
@@ -88,12 +89,10 @@ Future<void> _showAddUserDialog(BuildContext context) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
-      ColorScheme colorScheme = Theme.of(context).colorScheme;
       FriendsClient client = Provider.of<FriendsClient>(context, listen: false);
       TextEditingController nameInput = TextEditingController();
 
       return AlertDialog(
-        backgroundColor: colorScheme.background,
         content: EntityNameTextInput(
           nameInput: nameInput,
           isValid: (value) => true, // todo add isExists method to friends service to call here

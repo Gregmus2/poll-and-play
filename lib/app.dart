@@ -17,6 +17,7 @@ class App extends StatelessWidget {
       title: 'Poll And Play',
       home: stateProvider.user != null ? const HomePage() : const LoginPage(),
       theme: getThemeData(context),
+      themeMode: ThemeMode.dark,
     );
   }
 }

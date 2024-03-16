@@ -24,18 +24,15 @@ class _EventCreatePageState extends State<EventCreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: theme.iconTheme.color),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.of(context).pop(),
           ),
           centerTitle: true,
-          title: Text(
+          title: const Text(
             "Create Event",
-            style: theme.textTheme.titleLarge,
           ),
           actions: [
             IconButton(
@@ -44,7 +41,7 @@ class _EventCreatePageState extends State<EventCreatePage> {
 
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.check, color: theme.iconTheme.color))
+                icon: const Icon(Icons.check))
           ],
         ),
         body: Padding(
@@ -52,7 +49,6 @@ class _EventCreatePageState extends State<EventCreatePage> {
             child: Column(
               children: [
                 Card(
-                    color: theme.colorScheme.background,
                     elevation: 3,
                     child: TargetSelection(
                       onTargetChanged: (SelectedTarget selected) {
@@ -62,7 +58,6 @@ class _EventCreatePageState extends State<EventCreatePage> {
                       },
                     )),
                 Card(
-                    color: theme.colorScheme.background,
                     elevation: 3,
                     child: DateTimeSelection((date) {
                       setState(() {
@@ -71,7 +66,6 @@ class _EventCreatePageState extends State<EventCreatePage> {
                     })),
                 Expanded(
                   child: Card(
-                    color: theme.colorScheme.background,
                     elevation: 3,
                     child: GamesSelection(
                       onGamesChanged: (games) {
@@ -183,8 +177,6 @@ class _DateTimeSelectionState extends State<DateTimeSelection> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -216,7 +208,7 @@ class _DateTimeSelectionState extends State<DateTimeSelection> {
                     widget.onDateChanged(combiDateTime);
                   }
                 },
-                child: Text(dateFormat.format(date), style: theme.textTheme.bodySmall!)),
+                child: Text(dateFormat.format(date))),
           ),
           Expanded(
               flex: 1,
@@ -242,7 +234,7 @@ class _DateTimeSelectionState extends State<DateTimeSelection> {
                       widget.onDateChanged(combiDateTime);
                     }
                   },
-                  child: Text(timeFormat.format(date), style: theme.textTheme.bodySmall!))),
+                  child: Text(timeFormat.format(date)))),
         ],
       ),
     );
@@ -265,7 +257,6 @@ class _TargetSelectionState extends State<TargetSelection> {
   Widget build(BuildContext context) {
     GroupsProvider groupProvider = Provider.of<GroupsProvider>(context, listen: false);
     FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
-    ThemeData theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -277,15 +268,15 @@ class _TargetSelectionState extends State<TargetSelection> {
                 style: const ButtonStyle(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                segments: <ButtonSegment<Target>>[
+                segments: const <ButtonSegment<Target>>[
                   ButtonSegment<Target>(
-                      label: Text("Group", style: theme.textTheme.bodySmall),
+                      label: Text("Group"),
                       value: Target.group,
-                      icon: Icon(Icons.group, color: theme.iconTheme.color)),
+                      icon: Icon(Icons.group)),
                   ButtonSegment<Target>(
-                      label: Text("Users", style: theme.textTheme.bodySmall),
+                      label: Text("Users"),
                       value: Target.users,
-                      icon: Icon(Icons.person, color: theme.iconTheme.color)),
+                      icon: Icon(Icons.person)),
                 ],
                 selected: <Target>{_target.type},
                 onSelectionChanged: (Set<Target> selected) {
@@ -326,7 +317,6 @@ class _TargetSelectionState extends State<TargetSelection> {
                         (index) => ChoiceChip(
                               label: Text(
                                 friendsProvider.friends[index].name,
-                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                               selected: _target.id.contains(friendsProvider.friends[index].id),
                               onSelected: (bool selected) {

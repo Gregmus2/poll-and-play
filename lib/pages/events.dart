@@ -7,12 +7,12 @@ class EventsPage extends StatelessWidget implements page.Page {
 
   @override
   Icon getIcon(BuildContext context) {
-    return Icon(Icons.event, color: Theme.of(context).iconTheme.color);
+    return const Icon(Icons.event);
   }
 
   @override
   Icon getUnselectedIcon(BuildContext context) {
-    return Icon(Icons.event_outlined, color: Theme.of(context).iconTheme.color);
+    return const Icon(Icons.event_outlined);
   }
 
   @override
@@ -24,16 +24,15 @@ class EventsPage extends StatelessWidget implements page.Page {
   Widget? floatingActionButton(BuildContext context) => FloatingActionButton(
         onPressed: () => Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => EventCreatePage()),
+          MaterialPageRoute(builder: (context) => const EventCreatePage()),
         ),
-        child: Icon(
+        child: const Icon(
           Icons.add,
-          color: Theme.of(context).iconTheme.color,
         ),
       );
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
+    return const Placeholder();
   }
 }

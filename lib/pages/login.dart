@@ -15,14 +15,14 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Login', style: Theme.of(context).textTheme.titleLarge),
+          title: const Text('Login'),
         ),
         body: Center(
           child: IconButton(
               onPressed: () {
                 _signIn(context);
               },
-              icon: Icon(Icons.login, color: Theme.of(context).iconTheme.color)),
+              icon: const Icon(Icons.login)),
         ));
   }
 }

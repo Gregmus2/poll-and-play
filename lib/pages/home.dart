@@ -27,24 +27,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    ColorScheme colorScheme = Theme.of(context).colorScheme;
     StateProvider stateProvider = Provider.of<StateProvider>(context, listen: false);
 
     return Scaffold(
         appBar: AppBar(
-          foregroundColor: Colors.white,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CachedNetworkImage(imageUrl: FirebaseAuth.instance.currentUser!.photoURL ?? "", width: 40, height: 40, fit: BoxFit.cover, placeholder: (context, url) => const CircularProgressIndicator()),
               const SizedBox(width: 10),
-              Text(FirebaseAuth.instance.currentUser!.displayName ?? "", style: Theme.of(context).textTheme.titleLarge),
+              Text(FirebaseAuth.instance.currentUser!.displayName ?? ""),
             ],
           ),
           centerTitle: true,
           actions: [
             IconButton(
-              icon: Icon(Icons.logout, color: Theme.of(context).iconTheme.color),
+              icon: const Icon(Icons.logout),
               onPressed: () {
                 FirebaseAuth.instance.signOut();
                 stateProvider.resetUser();
@@ -61,9 +59,7 @@ class _HomePageState extends State<HomePage> {
           onDestinationSelected: (int index) => setState(() {
             pageIndex = index;
           }),
-          indicatorColor: colorScheme.primary,
           selectedIndex: pageIndex,
-          backgroundColor: colorScheme.background,
           elevation: 1,
           destinations: List.generate(
               _pages.length,

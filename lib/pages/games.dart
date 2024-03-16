@@ -10,12 +10,12 @@ class GamesPage extends StatelessWidget implements page.Page {
 
   @override
   Icon getIcon(BuildContext context) {
-    return Icon(Icons.gamepad, color: Theme.of(context).iconTheme.color);
+    return const Icon(Icons.gamepad);
   }
 
   @override
   Icon getUnselectedIcon(BuildContext context) {
-    return const Icon(Icons.gamepad_outlined, color: Colors.white);
+    return const Icon(Icons.gamepad_outlined);
   }
 
   @override
@@ -30,13 +30,17 @@ class GamesPage extends StatelessWidget implements page.Page {
   Widget build(BuildContext context) {
     GamesProvider gamesProvider = Provider.of<GamesProvider>(context);
 
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 0.7,
+    // todo search
+    return RefreshIndicator(
+      onRefresh: gamesProvider.refresh,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 0.7,
+        ),
+        itemCount: gamesProvider.games.length,
+        itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
       ),
-      itemCount: gamesProvider.games.length,
-      itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
     );
   }
 }
@@ -59,7 +63,7 @@ class GameTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
         side: isSelected
             ? BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).indicatorColor,
                 width: 2,
               )
             : BorderSide.none,
