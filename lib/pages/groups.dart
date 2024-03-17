@@ -77,7 +77,7 @@ class GroupsPage extends StatelessWidget implements page.Page {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                color: Colors.redAccent),
+                color: Theme.of(context).colorScheme.error),
           ],
         );
       },
@@ -118,9 +118,12 @@ class GroupsPage extends StatelessWidget implements page.Page {
 
     groupsInvitedList.insert(
         0,
-        const ListTile(
+        ListTile(
             title: Center(
-                child: Text("Invitations",))));
+                child: Text(
+          "Invitations",
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+        ))));
 
     return groupsInvitedList;
   }
@@ -137,6 +140,7 @@ class GroupTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StateProvider stateProvider = Provider.of<StateProvider>(context);
+    Color redColor = Theme.of(context).colorScheme.error;
 
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -146,13 +150,12 @@ class GroupTile extends StatelessWidget {
       ),
       trailing: group.owner == stateProvider.user?.id
           ? IconButton(
-              icon: const Icon(Icons.delete, color: Colors.redAccent),
+              icon: Icon(Icons.delete, color: redColor),
               onPressed: () {
-                // todo confirm delete
-                // todo delete group
+                deleteGroupWithConfirmation(context, group);
               })
           : IconButton(
-              icon: const Icon(Icons.exit_to_app, color: Colors.redAccent),
+              icon: Icon(Icons.exit_to_app, color: redColor),
               onPressed: () {
                 // todo leave group
               }),
@@ -164,4 +167,29 @@ class GroupTile extends StatelessWidget {
       },
     );
   }
+}
+
+Future<void> deleteGroupWithConfirmation(BuildContext context, Group group) {
+  GroupsProvider provider = Provider.of<GroupsProvider>(context, listen: false);
+
+  return showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Group"),
+        content: const Text("Are you sure you want to delete this group?"),
+        actions: <Widget>[
+          DialogButton(
+              text: "Delete",
+              onPressed: () {
+                provider.deleteGroup(group.id).then((value) => Navigator.pop(context));
+              },
+              color: Theme.of(context).colorScheme.error),
+          DialogButton(
+              text: "Cancel",
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              color: Theme.of(context).colorScheme.primary),
+        ],
+      ));
 }

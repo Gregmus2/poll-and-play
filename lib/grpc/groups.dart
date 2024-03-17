@@ -76,4 +76,15 @@ class GroupsClient {
       print('Error removing user from group: $e');
     }
   }
+
+  Future<Group> getGroup($fixnum.Int64 id) async {
+    try {
+      final response = await _client.getGroup(GetGroupRequest(id: id), options: CallOptions(providers: [Authenticator.authenticate]));
+      return response;
+    } catch (e) {
+      // todo handle properly
+      print('Error getting group: $e');
+      return Group();
+    }
+  }
 }

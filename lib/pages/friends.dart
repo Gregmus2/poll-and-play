@@ -71,7 +71,7 @@ class FriendTile extends StatelessWidget {
       onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       trailing: IconButton(
-        icon: const Icon(Icons.delete, color: Colors.red),
+        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
         onPressed: () {
           provider.removeFriend(friend.id);
         },
@@ -107,13 +107,13 @@ Future<void> _showAddUserDialog(BuildContext context) {
                 client.addFriend(Int64.parseInt(nameInput.text));
                 Navigator.pop(context);
               },
-              color: Colors.green),
+              color: Theme.of(context).colorScheme.primary),
           DialogButton(
               text: 'CANCEL',
               onPressed: () {
                 Navigator.pop(context);
               },
-              color: Colors.red)
+              color: Theme.of(context).colorScheme.error)
         ],
       );
     },

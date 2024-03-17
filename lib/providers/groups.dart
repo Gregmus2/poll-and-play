@@ -33,4 +33,34 @@ class GroupsProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> updateGroup($fixnum.Int64 id, String name) async {
+    _client.updateGroup(id, name);
+    _groups.firstWhere((element) => element.id == id).name = name;
+
+    notifyListeners();
+  }
+
+  Future<void> deleteGroup($fixnum.Int64 id) async {
+    _client.deleteGroup(id);
+    _groups.removeWhere((element) => element.id == id);
+
+    notifyListeners();
+  }
+
+  Future<void> inviteToGroup($fixnum.Int64 groupId, $fixnum.Int64 userId) async {
+    await _client.inviteToGroup(groupId, userId);
+    final i = _groups.indexWhere((element) => element.id == groupId);
+    _groups[i] = await _client.getGroup(groupId);
+
+    notifyListeners();
+  }
+
+  Future<void> removeUserFromGroup($fixnum.Int64 groupId, $fixnum.Int64 userId) async {
+    await _client.removeUserFromGroup(groupId, userId);
+    final i = _groups.indexWhere((element) => element.id == groupId);
+    _groups[i] = await _client.getGroup(groupId);
+
+    notifyListeners();
+  }
 }
