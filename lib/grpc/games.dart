@@ -1,4 +1,4 @@
-import 'package:grpc/grpc.dart';
+import 'package:grpc/grpc_or_grpcweb.dart';
 import 'package:poll_and_play/grpc/authenticator.dart';
 import 'package:poll_play_proto_gen/google/protobuf/empty.pb.dart';
 import 'package:poll_play_proto_gen/public.dart';
@@ -7,7 +7,8 @@ class GamesClient {
   late GamesServiceClient _client;
 
   GamesClient(List<String> address) {
-    final channel = ClientChannel(address[0], port: int.parse(address[1]), options: const ChannelOptions(credentials: ChannelCredentials.insecure()),);
+    final channel = GrpcOrGrpcWebClientChannel.toSingleEndpoint(
+        host: address[0], port: int.parse(address[1]), transportSecure: false);
     _client = GamesServiceClient(channel);
   }
 
@@ -21,7 +22,7 @@ class GamesClient {
       return [];
     }
   }
-  
+
   Future<void> refreshData() async {
     try {
       await _client.refreshData(Empty(), options: CallOptions(providers: [Authenticator.authenticate]));
@@ -30,10 +31,11 @@ class GamesClient {
       print('Error refreshing data: $e');
     }
   }
-  
+
   Future<void> connectSteam(String steamID) async {
     try {
-      await _client.connectSteam(ConnectSteamRequest(steamId: steamID), options: CallOptions(providers: [Authenticator.authenticate]));
+      await _client.connectSteam(ConnectSteamRequest(steamId: steamID),
+          options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly
       print('Error connecting steam: $e');

@@ -5,6 +5,7 @@ import 'package:poll_and_play/pages/events.dart';
 import 'package:poll_and_play/pages/friends.dart';
 import 'package:poll_and_play/pages/games.dart';
 import 'package:poll_and_play/pages/groups.dart';
+import 'package:poll_and_play/pages/login.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
 import 'package:poll_and_play/providers/state.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,12 @@ class _HomePageState extends State<HomePage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              CachedNetworkImage(imageUrl: FirebaseAuth.instance.currentUser!.photoURL ?? "", width: 40, height: 40, fit: BoxFit.cover, placeholder: (context, url) => const CircularProgressIndicator()),
+              CachedNetworkImage(
+                  imageUrl: FirebaseAuth.instance.currentUser!.photoURL ?? "",
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => const CircularProgressIndicator()),
               const SizedBox(width: 10),
               Text(FirebaseAuth.instance.currentUser!.displayName ?? ""),
             ],
@@ -46,6 +52,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 FirebaseAuth.instance.signOut();
                 stateProvider.resetUser();
+                googleSignIn.disconnect();
               },
             ),
           ],

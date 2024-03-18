@@ -269,14 +269,8 @@ class _TargetSelectionState extends State<TargetSelection> {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 segments: const <ButtonSegment<Target>>[
-                  ButtonSegment<Target>(
-                      label: Text("Group"),
-                      value: Target.group,
-                      icon: Icon(Icons.group)),
-                  ButtonSegment<Target>(
-                      label: Text("Users"),
-                      value: Target.users,
-                      icon: Icon(Icons.person)),
+                  ButtonSegment<Target>(label: Text("Group"), value: Target.group, icon: Icon(Icons.group)),
+                  ButtonSegment<Target>(label: Text("Users"), value: Target.users, icon: Icon(Icons.person)),
                 ],
                 selected: <Target>{_target.type},
                 onSelectionChanged: (Set<Target> selected) {

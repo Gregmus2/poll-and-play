@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:poll_and_play/grpc/friends.dart';
 import 'package:poll_play_proto_gen/public.dart';
 
 class FriendsProvider extends ChangeNotifier {
-  final FriendsClient _client = FriendsClient(GlobalConfig().friendsAddress.split(':'));
+  final FriendsClient _client = FriendsClient(GlobalConfig().apiAddress.split(':'));
   late List<Friend> _friends;
 
   Future<void> init() async {

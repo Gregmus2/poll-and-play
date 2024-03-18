@@ -32,21 +32,23 @@ class _GroupPageState extends State<GroupPage> {
         title: Text(
           widget.group.name,
         ),
-        actions: widget.group.owner == stateProvider.user?.id ? [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              _showEditNameDialog(context);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-            onPressed: () {
-              deleteGroupWithConfirmation(context, widget.group);
-              Navigator.pop(context);
-            },
-          ),
-        ] : null,
+        actions: widget.group.owner == stateProvider.user?.id
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    _showEditNameDialog(context);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                  onPressed: () {
+                    deleteGroupWithConfirmation(context, widget.group);
+                    Navigator.pop(context);
+                  },
+                ),
+              ]
+            : null,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

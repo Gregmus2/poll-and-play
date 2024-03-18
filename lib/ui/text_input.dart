@@ -4,7 +4,8 @@ class EntityNameTextInput extends StatelessWidget {
   const EntityNameTextInput({
     super.key,
     required TextEditingController nameInput,
-    required this.isValid, required this.isValidMessage,
+    required this.isValid,
+    required this.isValidMessage,
   }) : _nameInput = nameInput;
 
   final TextEditingController _nameInput;

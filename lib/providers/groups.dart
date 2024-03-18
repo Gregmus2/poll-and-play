@@ -6,7 +6,7 @@ import 'package:poll_and_play/grpc/groups.dart';
 import 'package:poll_play_proto_gen/public.dart';
 
 class GroupsProvider extends ChangeNotifier {
-  final GroupsClient _client = GroupsClient(GlobalConfig().groupsAddress.split(':'));
+  final GroupsClient _client = GroupsClient(GlobalConfig().apiAddress.split(':'));
   late List<Group> _groups;
 
   Future<void> init() async {

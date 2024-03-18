@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:poll_and_play/app.dart';
 import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/firebase_options.dart';
-import 'package:poll_and_play/grpc/friends.dart';
 import 'package:poll_and_play/grpc/registration.dart';
 import 'package:poll_and_play/grpc/user.dart';
 import 'package:poll_and_play/providers/friends.dart';
@@ -24,10 +23,10 @@ Future<void> _runApp(Widget app) async {
   );
   StateProvider stateProvider = StateProvider();
   await stateProvider.init();
-  UserClient userClient = UserClient(GlobalConfig().userAddress.split(':'));
+  UserClient userClient = UserClient(GlobalConfig().apiAddress.split(':'));
   FriendsProvider friendsProvider = FriendsProvider();
   GroupsProvider groupsProvider = GroupsProvider();
-  RegistrationClient registrationClient = RegistrationClient(GlobalConfig().registrationAddress.split(':'));
+  RegistrationClient registrationClient = RegistrationClient(GlobalConfig().apiAddress.split(':'));
   GamesProvider gamesProvider = GamesProvider();
 
   await Future.wait([

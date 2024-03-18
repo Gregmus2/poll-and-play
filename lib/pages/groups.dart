@@ -175,21 +175,21 @@ Future<void> deleteGroupWithConfirmation(BuildContext context, Group group) {
   return showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Delete Group"),
-        content: const Text("Are you sure you want to delete this group?"),
-        actions: <Widget>[
-          DialogButton(
-              text: "Delete",
-              onPressed: () {
-                provider.deleteGroup(group.id).then((value) => Navigator.pop(context));
-              },
-              color: Theme.of(context).colorScheme.error),
-          DialogButton(
-              text: "Cancel",
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              color: Theme.of(context).colorScheme.primary),
-        ],
-      ));
+            title: const Text("Delete Group"),
+            content: const Text("Are you sure you want to delete this group?"),
+            actions: <Widget>[
+              DialogButton(
+                  text: "Delete",
+                  onPressed: () {
+                    provider.deleteGroup(group.id).then((value) => Navigator.pop(context));
+                  },
+                  color: Theme.of(context).colorScheme.error),
+              DialogButton(
+                  text: "Cancel",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  color: Theme.of(context).colorScheme.primary),
+            ],
+          ));
 }

@@ -7,7 +7,7 @@ import 'package:poll_play_proto_gen/public.dart' as proto;
 // todo make all properties for all classes private (which are not used outside) and add getters/setters if necessary
 
 class StateProvider extends ChangeNotifier {
-  final UserClient _client = UserClient(GlobalConfig().userAddress.split(':'));
+  final UserClient _client = UserClient(GlobalConfig().apiAddress.split(':'));
   proto.User? _user;
 
   StateProvider();

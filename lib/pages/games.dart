@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
 import 'package:poll_and_play/providers/games.dart';
@@ -70,12 +71,17 @@ class GameTile extends StatelessWidget {
       ),
       elevation: 5,
       // todo add friends icons that have this game, name of the game
-      child: CachedNetworkImage(
-        imageUrl: game.game.capsuleUrl,
-        fit: BoxFit.fill,
-        placeholder: (context, url) => const CircularProgressIndicator(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),
+      child: kIsWeb
+          ? Image.network(
+              game.game.capsuleUrl,
+              fit: BoxFit.fill,
+            )
+          : CachedNetworkImage(
+              imageUrl: game.game.capsuleUrl,
+              fit: BoxFit.fill,
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
     );
   }
 }

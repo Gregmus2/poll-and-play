@@ -5,7 +5,7 @@ import 'package:poll_and_play/grpc/games.dart';
 import 'package:poll_play_proto_gen/public.dart';
 
 class GamesProvider extends ChangeNotifier {
-  final GamesClient _client = GamesClient(GlobalConfig().gamesAddress.split(':'));
+  final GamesClient _client = GamesClient(GlobalConfig().apiAddress.split(':'));
   late List<GameWithStat> _games;
 
   Future<void> init() async {
