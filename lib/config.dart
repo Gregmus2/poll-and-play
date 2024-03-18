@@ -4,6 +4,7 @@ class GlobalConfig {
   late String clientID;
   late String apiAddress;
   late String steamAPIKey;
+  late bool secureTransport;
 
   GlobalConfig._internal() {
     const String clientID = String.fromEnvironment('CLIENT_ID');
@@ -23,6 +24,8 @@ class GlobalConfig {
       throw AssertionError('STEAM_API_KEY is not set');
     }
     this.steamAPIKey = steamAPIKey;
+
+    secureTransport = const bool.fromEnvironment('SECURE_TRANSPORT');
   }
 
   factory GlobalConfig() {

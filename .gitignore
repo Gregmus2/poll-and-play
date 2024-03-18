@@ -1,7 +1,5 @@
 .secrets.json
-.secrets.json.local
-.secrets.json.emu
-.secrets.json.web
+.secrets.json.*
 android/app/google-services.json
 # Miscellaneous
 *.class

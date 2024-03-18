@@ -8,7 +8,6 @@ import 'package:poll_and_play/providers/friends.dart';
 import 'package:poll_and_play/providers/games.dart';
 import 'package:poll_and_play/providers/groups.dart';
 import 'package:poll_and_play/providers/state.dart';
-import 'package:poll_and_play/utils/sign_in.dart';
 import 'package:provider/provider.dart';
 
 import 'home.dart';
@@ -53,10 +52,6 @@ class _LoginPageState extends State<LoginPage> {
         readyToUpdate = true;
       }
     });
-
-    if (!_isAuthorized && _googleUser == null) {
-      googleSignIn.signInSilently();
-    }
   }
 
   @override
@@ -64,6 +59,9 @@ class _LoginPageState extends State<LoginPage> {
     StateProvider stateProvider = Provider.of<StateProvider>(context);
     if (stateProvider.user != null) {
       return const HomePage();
+    }
+    if (!_isAuthorized && _googleUser == null) {
+      googleSignIn.signInSilently();
     }
     if (readyToUpdate) {
       _updateUser(context);
