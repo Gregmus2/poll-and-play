@@ -532,8 +532,8 @@ packages:
     dependency: "direct main"
     description:
       name: poll_play_proto_gen
-      sha256: fafb47f4b5b9f39325aae61d9de39ba8f7b31797c2b05f6017ff3a479b6a5cb3
-      url: "https://dart.cloudsmith.io/workspace-for-kostiantyn/poll-play-proto-gen/"
+      sha256: fefb98689caca43055fcf4e98c8fb3275bdc71ea7e3df1561dcb9f0b738e8e1e
+      url: "https://dart.cloudsmith.io/gregmus-co/poll-play/"
     source: hosted
     version: "0.0.32"
   protobuf:
