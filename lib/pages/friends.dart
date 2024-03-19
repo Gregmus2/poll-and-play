@@ -77,7 +77,7 @@ class FriendTile extends StatelessWidget {
         },
       ),
       leading: CircleAvatar(
-        foregroundImage: friend.avatar != "" ? CachedNetworkImageProvider(friend.avatar) : null,
+        foregroundImage: friend.avatar.hasValue() ? CachedNetworkImageProvider(friend.avatar.value) : null,
         radius: 30,
       ),
       title: Text(friend.name),

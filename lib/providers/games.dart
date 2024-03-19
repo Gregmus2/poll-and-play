@@ -24,4 +24,11 @@ class GamesProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> connectSteam(String steamID) async {
+    await _client.connectSteam(steamID);
+    _games = await _client.listGames();
+
+    notifyListeners();
+  }
 }

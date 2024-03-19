@@ -36,13 +36,13 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CachedNetworkImage(
-                  imageUrl: FirebaseAuth.instance.currentUser!.photoURL ?? "",
+                  imageUrl: stateProvider.user!.picture.value == "" ? FirebaseAuth.instance.currentUser!.photoURL! : stateProvider.user!.picture.value,
                   width: 40,
                   height: 40,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => const CircularProgressIndicator()),
               const SizedBox(width: 10),
-              Text(FirebaseAuth.instance.currentUser!.displayName ?? ""),
+              Text(stateProvider.user!.name),
             ],
           ),
           centerTitle: true,

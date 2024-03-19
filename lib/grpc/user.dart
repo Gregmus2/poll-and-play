@@ -25,9 +25,9 @@ class UserClient {
     return user!;
   }
 
-  Future<void> updateUser(String name, steamID) async {
+  Future<void> updateUser(String? name) async {
     try {
-      await _client.updateUser(UpdateUserRequest(name: name, steamId: steamID),
+      await _client.updateUser(UpdateUserRequest(name: StringValue(value: name)),
           options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly

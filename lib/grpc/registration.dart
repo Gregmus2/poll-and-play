@@ -12,9 +12,9 @@ class RegistrationClient {
     _client = RegistrationServiceClient(channel);
   }
 
-  Future<void> register(String name, email, firebaseID) async {
+  Future<void> register(String name, email, firebaseID, photo) async {
     try {
-      await _client.register(RegisterRequest(name: name, email: email, firebaseId: firebaseID),
+      await _client.register(RegisterRequest(name: name, email: email, firebaseId: firebaseID, picture: photo),
           options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly

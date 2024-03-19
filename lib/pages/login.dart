@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
     final user = await FirebaseAuth.instance.signInWithCredential(credential);
     if (user.user != null && user.additionalUserInfo!.isNewUser) {
       final userData = user.user!;
-      registrationClient.register(userData.displayName ?? "", userData.email, userData.uid);
+      await registrationClient.register(userData.displayName ?? "", userData.email, userData.uid, userData.photoURL ?? "");
     }
 
     await Future.wait([

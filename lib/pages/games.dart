@@ -3,6 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
 import 'package:poll_and_play/providers/games.dart';
+import 'package:poll_and_play/providers/state.dart';
+import 'package:poll_and_play/ui/dialog_button.dart';
+import 'package:poll_and_play/ui/text_input.dart';
 import 'package:poll_play_proto_gen/public.dart';
 import 'package:provider/provider.dart';
 
@@ -30,9 +33,10 @@ class GamesPage extends StatelessWidget implements page.Page {
   @override
   Widget build(BuildContext context) {
     GamesProvider gamesProvider = Provider.of<GamesProvider>(context);
+    StateProvider stateProvider = Provider.of<StateProvider>(context);
 
-    // todo search
-    return RefreshIndicator(
+    // todo local flutter search
+    return stateProvider.user!.steamId.hasValue() ? RefreshIndicator(
       onRefresh: gamesProvider.refresh,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -42,6 +46,58 @@ class GamesPage extends StatelessWidget implements page.Page {
         itemCount: gamesProvider.games.length,
         itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
       ),
+    ) : Center(
+      // todo add reconnect option
+      child: ElevatedButton(
+        onPressed: () {
+          showConnectSteamDialog(context);
+        },
+        child: const Text("Connect Steam"),
+      ),
+    );
+  }
+
+  void showConnectSteamDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        StateProvider state = Provider.of<StateProvider>(context, listen: false);
+        GamesProvider gamesProvider = Provider.of<GamesProvider>(context, listen: false);
+        TextEditingController nameInput = TextEditingController();
+
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Please enter your steam ID\n\nYou can find it in your profile URL\nhttps://steamcommunity.com/profiles/YOUR_STEAM_ID/"),
+              EntityNameTextInput(
+                nameInput: nameInput,
+                isValid: (value) => true,
+                isValidMessage: "",
+              ),
+            ],
+          ),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+          actions: <Widget>[
+            DialogButton(
+                text: 'OK',
+                onPressed: () {
+                  gamesProvider.connectSteam(nameInput.text).then((value) {
+                    state.initUser();
+
+                    Navigator.pop(context);
+                  });
+                },
+                color: Theme.of(context).colorScheme.primary),
+            DialogButton(
+                text: 'CANCEL',
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                color: Theme.of(context).colorScheme.error)
+          ],
+        );
+      },
     );
   }
 }

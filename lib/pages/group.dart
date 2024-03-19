@@ -129,7 +129,7 @@ class MemberTile extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       leading: CircleAvatar(
-        foregroundImage: member.user.picture != "" ? CachedNetworkImageProvider(member.user.picture) : null,
+        foregroundImage: member.user.picture.hasValue() ? CachedNetworkImageProvider(member.user.picture.value) : null,
         radius: 30,
       ),
       trailing: stateProvider.user!.id != member.user.id && group.owner == stateProvider.user?.id

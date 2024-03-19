@@ -244,10 +244,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: "5b1726fee554d1cc9db1baef8061b126567ff0a1140a03ed7de936e62f2ab98b"
+      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.0"
+    version: "6.2.1"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -268,10 +268,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_android
-      sha256: bfd42c81c30c6faba16e0f62968d5505a87504aaa672b3155ee931461abb0a49
+      sha256: "38cef11ed22fc0c9bfa7b00bf7f2d91012138f5613089522917fd26c853be93e"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.21"
+    version: "6.1.22"
   google_sign_in_ios:
     dependency: transitive
     description:
@@ -532,10 +532,10 @@ packages:
     dependency: "direct main"
     description:
       name: poll_play_proto_gen
-      sha256: fefb98689caca43055fcf4e98c8fb3275bdc71ea7e3df1561dcb9f0b738e8e1e
-      url: "https://dart.cloudsmith.io/gregmus-co/poll-play/"
+      sha256: "2d77d4415147e4436539e8cc676d9fe44901759a40ad16443d05386787a9a155"
+      url: "https://dart.cloudsmith.io/musorinfamily/poll-play-proto/"
     source: hosted
-    version: "0.0.32"
+    version: "0.0.41"
   protobuf:
     dependency: transitive
     description:
@@ -719,4 +719,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.3.0 <4.0.0"
-  flutter: ">=3.19.0"
+  flutter: ">=3.19.2"

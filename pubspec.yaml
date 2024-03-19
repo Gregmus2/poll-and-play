@@ -25,7 +25,7 @@ dependencies:
   provider: ^6.1.1
   google_fonts: ^6.1.0
   poll_play_proto_gen:
-    hosted: https://dart.cloudsmith.io/gregmus-co/poll-play
+    hosted: https://dart.cloudsmith.io/musorinfamily/poll-play-proto/
     version: ^0.0.3
   grpc: ^3.2.4
   intl: ^0.19.0

@@ -24,6 +24,13 @@ class StateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateUser(String? name) async {
+    await _client.updateUser(name);
+    _user = (await _client.getUser()).user;
+
+    notifyListeners();
+  }
+
   void resetUser() {
     _user = null;
     notifyListeners();
