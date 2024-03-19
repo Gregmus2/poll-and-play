@@ -1,15 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fixnum/src/int64.dart';
 import 'package:flutter/material.dart';
-import 'package:poll_and_play/grpc/friends.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
 import 'package:poll_and_play/providers/friends.dart';
-import 'package:poll_and_play/ui/dialog_button.dart';
-import 'package:poll_and_play/ui/text_input.dart';
 import 'package:poll_play_proto_gen/public.dart';
 import 'package:provider/provider.dart';
 
-class FriendsPage extends StatelessWidget implements page.Page {
+class FriendsPage extends StatefulWidget implements page.Page {
   const FriendsPage({super.key});
 
   @override
@@ -28,12 +24,14 @@ class FriendsPage extends StatelessWidget implements page.Page {
   }
 
   @override
-  Widget? floatingActionButton(BuildContext context) => FloatingActionButton(
-        onPressed: () => _showAddUserDialog(context),
-        child: const Icon(
-          Icons.add,
-        ),
-      );
+  Widget? floatingActionButton(BuildContext context) => null;
+
+  @override
+  State<FriendsPage> createState() => _FriendsPageState();
+}
+
+class _FriendsPageState extends State<FriendsPage> {
+  List<User> friends = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,81 +39,105 @@ class FriendsPage extends StatelessWidget implements page.Page {
 
     return RefreshIndicator(
       onRefresh: provider.refresh,
-      child: ListView.builder(
-          itemCount: provider.friends.length,
-          itemBuilder: (context, index) => FriendTile(
-                friend: provider.friends[index],
-                onTap: () {
-                  // todo open friend page (reuse user page)
-                },
-              )),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SearchAnchor.bar(
+              suggestionsBuilder: (context, controller) {
+                if (controller.text.length < 3) {
+                  return [const ListTile(title: Text('Type at least 3 letters'))];
+                }
+
+                return provider.search(controller.text).then((value) {
+                  if (value.isEmpty) {
+                    return [const ListTile(title: Text('No results'))];
+                  }
+
+                  return List<FriendTile>.generate(
+                    value.length,
+                    (index) => FriendTile(
+                      friend: value[index].friend,
+                      isFriend: value[index].isFriend,
+                      onAdd: () => controller.closeView(""),
+                    ),
+                    growable: false,
+                  );
+                });
+              },
+            ),
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: provider.friends.length,
+                itemBuilder: (context, index) => FriendTile(
+                      friend: provider.friends[index],
+                      isFriend: true,
+                    )),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class FriendTile extends StatelessWidget {
+class FriendTile extends StatefulWidget {
   const FriendTile({
     super.key,
     required this.friend,
-    required this.onTap,
+    required this.isFriend,
+    this.onAdd,
   });
 
-  final Friend friend;
-  final Function() onTap;
+  final User friend;
+  final bool isFriend;
+  final VoidCallback? onAdd;
+
+  @override
+  State<FriendTile> createState() => _FriendTileState();
+}
+
+class _FriendTileState extends State<FriendTile> {
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     FriendsProvider provider = Provider.of<FriendsProvider>(context, listen: false);
 
     return ListTile(
-      onTap: onTap,
+      onTap: () {
+        // todo open friend profile
+      },
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      trailing: IconButton(
-        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-        onPressed: () {
-          provider.removeFriend(friend.id);
-        },
-      ),
+      trailing: widget.isFriend
+          ? IconButton(
+              icon: isLoading
+                  ? const CircularProgressIndicator()
+                  : Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+              onPressed: () {
+                setState(() {
+                  isLoading = true;
+                });
+                provider.removeFriend(widget.friend.id);
+              },
+            )
+          : IconButton(
+              icon: isLoading
+                  ? const CircularProgressIndicator()
+                  : Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
+              onPressed: () {
+                setState(() {
+                  isLoading = true;
+                });
+                provider.addFriend(widget.friend.id).then((value) => widget.onAdd?.call());
+              },
+            ),
       leading: CircleAvatar(
-        foregroundImage: friend.avatar.hasValue() ? CachedNetworkImageProvider(friend.avatar.value) : null,
+        foregroundImage:
+            widget.friend.picture.hasValue() ? CachedNetworkImageProvider(widget.friend.picture.value) : null,
         radius: 30,
       ),
-      title: Text(friend.name),
+      title: Text(widget.friend.name),
+      subtitle: Text(widget.friend.username),
     );
   }
-}
-
-Future<void> _showAddUserDialog(BuildContext context) {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      FriendsClient client = Provider.of<FriendsClient>(context, listen: false);
-      TextEditingController nameInput = TextEditingController();
-
-      return AlertDialog(
-        content: EntityNameTextInput(
-          nameInput: nameInput,
-          isValid: (value) => true, // todo add isExists method to friends service to call here
-          isValidMessage: "",
-        ),
-        actionsAlignment: MainAxisAlignment.spaceEvenly,
-        actions: <Widget>[
-          DialogButton(
-              text: 'OK',
-              onPressed: () {
-                // todo replace with email
-                client.addFriend(Int64.parseInt(nameInput.text));
-                Navigator.pop(context);
-              },
-              color: Theme.of(context).colorScheme.primary),
-          DialogButton(
-              text: 'CANCEL',
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              color: Theme.of(context).colorScheme.error)
-        ],
-      );
-    },
-  );
 }

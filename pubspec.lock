@@ -532,10 +532,10 @@ packages:
     dependency: "direct main"
     description:
       name: poll_play_proto_gen
-      sha256: "2d77d4415147e4436539e8cc676d9fe44901759a40ad16443d05386787a9a155"
+      sha256: "5f30faec1d9c55925f821872ec45bb1c9fb9262498abe72a4e4126053ad73a88"
       url: "https://dart.cloudsmith.io/musorinfamily/poll-play-proto/"
     source: hosted
-    version: "0.0.41"
+    version: "0.0.42"
   protobuf:
     dependency: transitive
     description:

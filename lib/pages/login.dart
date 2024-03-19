@@ -63,6 +63,9 @@ class _LoginPageState extends State<LoginPage> {
     if (!_isAuthorized && _googleUser == null) {
       googleSignIn.signInSilently();
     }
+    if (_googleUser != null && !_isAuthorized) {
+      _handleAuthorizeScopes();
+    }
     if (readyToUpdate) {
       _updateUser(context);
       readyToUpdate = false;
@@ -75,25 +78,7 @@ class _LoginPageState extends State<LoginPage> {
         body: Center(
           child: _googleUser == null
               ? IconButton(onPressed: _handleSignIn, icon: const Icon(Icons.login))
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    GoogleUserCircleAvatar(
-                      identity: _googleUser!,
-                    ),
-                    if (!_isAuthorized) ...<Widget>[
-                      const Text('Additional permissions needed to read your profile'),
-                      ElevatedButton(
-                        onPressed: _handleAuthorizeScopes,
-                        child: const Text('REQUEST PERMISSIONS'),
-                      ),
-                    ],
-                    ElevatedButton(
-                      onPressed: _handleSignOut,
-                      child: const Text('SIGN OUT'),
-                    ),
-                  ],
-                ),
+              : const CircularProgressIndicator(),
         ));
   }
 
@@ -108,8 +93,6 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
-
-  Future<void> _handleSignOut() => googleSignIn.disconnect();
 
   Future<void> _handleSignIn() async {
     try {
@@ -136,7 +119,8 @@ class _LoginPageState extends State<LoginPage> {
     final user = await FirebaseAuth.instance.signInWithCredential(credential);
     if (user.user != null && user.additionalUserInfo!.isNewUser) {
       final userData = user.user!;
-      await registrationClient.register(userData.displayName ?? "", userData.email, userData.uid, userData.photoURL ?? "");
+      await registrationClient.register(
+          userData.displayName ?? "", userData.email, userData.uid, userData.photoURL ?? "");
     }
 
     await Future.wait([

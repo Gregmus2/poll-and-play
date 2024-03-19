@@ -24,7 +24,7 @@ class FriendsClient {
     }
   }
 
-  Future<List<Friend>> getFriends() async {
+  Future<List<User>> getFriends() async {
     ListFriendsResponse? response;
     try {
       response = await _client.listFriends(Empty(), options: CallOptions(providers: [Authenticator.authenticate]));
@@ -44,5 +44,18 @@ class FriendsClient {
       // todo handle properly
       print('Error removing friend: $e');
     }
+  }
+
+  Future<List<SearchResponse_SearchResult>> search(String username) async {
+    SearchResponse? response;
+    try {
+      response = await _client.search(SearchRequest(username: username),
+          options: CallOptions(providers: [Authenticator.authenticate]));
+    } catch (e) {
+      // todo handle properly
+      print('Error searching friends: $e');
+    }
+
+    return response!.friends;
   }
 }
