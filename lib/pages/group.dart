@@ -150,6 +150,7 @@ class MemberTile extends StatelessWidget {
     StateProvider stateProvider = Provider.of<StateProvider>(context, listen: false);
 
     // todo mark invited members separately
+    // todo add refresh
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       leading: CircleAvatar(

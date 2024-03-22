@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
@@ -38,23 +40,33 @@ class _FriendsPageState extends State<FriendsPage> {
   Widget build(BuildContext context) {
     FriendsProvider provider = Provider.of<FriendsProvider>(context);
 
-    return RefreshIndicator(
-      onRefresh: provider.refresh,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const FriendsSearch(),
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: provider.friends.length,
-                itemBuilder: (context, index) => FriendTile(
-                    friend: provider.friends[index],
-                    button: LoadingIconButton(
-                      icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-                      onPressed: () => provider.removeFriend(provider.friends[index].id),
-                    ))),
-          ],
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        physics: const BouncingScrollPhysics(),
+        dragDevices: {
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.trackpad
+        },
+      ),
+      child: RefreshIndicator(
+        onRefresh: provider.refresh,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const FriendsSearch(),
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: provider.friends.length,
+                  itemBuilder: (context, index) => FriendTile(
+                      friend: provider.friends[index],
+                      button: LoadingIconButton(
+                        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                        onPressed: () => provider.removeFriend(provider.friends[index].id),
+                      ))),
+            ],
+          ),
         ),
       ),
     );

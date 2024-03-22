@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/group.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
@@ -38,11 +40,21 @@ class GroupsPage extends StatelessWidget implements page.Page {
   Widget build(BuildContext context) {
     GroupsProvider provider = Provider.of<GroupsProvider>(context);
 
-    return RefreshIndicator(
-      onRefresh: provider.refresh,
-      child: ListView(
-        padding: const EdgeInsets.all(8),
-        children: _generateGroups(context),
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        physics: const BouncingScrollPhysics(),
+        dragDevices: {
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.trackpad
+        },
+      ),
+      child: RefreshIndicator(
+        onRefresh: provider.refresh,
+        child: ListView(
+          padding: const EdgeInsets.all(8),
+          children: _generateGroups(context),
+        ),
       ),
     );
   }

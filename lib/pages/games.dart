@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,21 +34,10 @@ class GamesPage extends StatelessWidget implements page.Page {
 
   @override
   Widget build(BuildContext context) {
-    GamesProvider gamesProvider = Provider.of<GamesProvider>(context);
     StateProvider stateProvider = Provider.of<StateProvider>(context);
 
     // todo local flutter search
-    return stateProvider.user!.steamId.hasValue() ? RefreshIndicator(
-      onRefresh: gamesProvider.refresh,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 0.7,
-        ),
-        itemCount: gamesProvider.games.length,
-        itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
-      ),
-    ) : Center(
+    return stateProvider.user!.steamId.hasValue() ? const ListGames() : Center(
       // todo add reconnect option
       child: ElevatedButton(
         onPressed: () {
@@ -98,6 +89,39 @@ class GamesPage extends StatelessWidget implements page.Page {
           ],
         );
       },
+    );
+  }
+}
+
+class ListGames extends StatelessWidget {
+  const ListGames({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    GamesProvider gamesProvider = Provider.of<GamesProvider>(context);
+
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        physics: const BouncingScrollPhysics(),
+        dragDevices: {
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.trackpad
+        },
+      ),
+      child: RefreshIndicator(
+        onRefresh: gamesProvider.refresh,
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 0.7,
+          ),
+          itemCount: gamesProvider.games.length,
+          itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
+        ),
+      ),
     );
   }
 }

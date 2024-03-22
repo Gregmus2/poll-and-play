@@ -1,6 +1,12 @@
 # CHANGELOG.md
 
-## 0.3.0 (unreleased)
+## 0.4.0 (unreleased)
+
+Added:
+
+[//]: # (todo add version number in the app ui)
+
+## 0.3.0 (2024-03-22)
 
 Added:
 
@@ -10,6 +16,7 @@ Added:
 Fixed:
 
 - group service bugs
+- scroll behaviour on web platform
 
 
 ## 0.2.0 (2024-03-19)
