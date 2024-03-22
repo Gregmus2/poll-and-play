@@ -96,4 +96,17 @@ class GroupsClient {
       return Group();
     }
   }
+
+  Future<List<User>> searchMembers($fixnum.Int64 groupId, String username) async {
+    SearchFriendsToInviteRequest request = SearchFriendsToInviteRequest(groupExcluded: groupId, username: username);
+    try {
+      final response = await _client.searchFriendsToInvite(request, options: CallOptions(providers: [Authenticator.authenticate]));
+
+      return response.users;
+    } catch (e) {
+      // todo handle properly
+      print('Error searching members: $e');
+      return [];
+    }
+  }
 }

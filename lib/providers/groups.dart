@@ -3,11 +3,11 @@ import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/groups.dart';
-import 'package:poll_play_proto_gen/public.dart';
+import 'package:poll_play_proto_gen/public.dart' as proto;
 
 class GroupsProvider extends ChangeNotifier {
   final GroupsClient _client = GroupsClient(GlobalConfig().apiAddress.split(':'));
-  late List<Group> _groups;
+  late List<proto.Group> _groups;
 
   Future<void> init() async {
     if (FirebaseAuth.instance.currentUser == null) {
@@ -17,9 +17,9 @@ class GroupsProvider extends ChangeNotifier {
     await refresh();
   }
 
-  List<Group> get groups => _groups;
+  List<proto.Group> get groups => _groups;
 
-  Group? getGroup($fixnum.Int64 id) {
+  proto.Group? getGroup($fixnum.Int64 id) {
     return _groups.where((element) => element.id == id).firstOrNull;
   }
 
@@ -62,5 +62,9 @@ class GroupsProvider extends ChangeNotifier {
     _groups[i] = await _client.getGroup(groupId);
 
     notifyListeners();
+  }
+
+  Future<List<proto.User>> searchMembers($fixnum.Int64 groupId, String username) async {
+    return _client.searchMembers(groupId, username);
   }
 }

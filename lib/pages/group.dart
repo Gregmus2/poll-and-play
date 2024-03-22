@@ -1,17 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
+import 'package:poll_and_play/pages/friends.dart';
 import 'package:poll_and_play/pages/groups.dart';
 import 'package:poll_and_play/providers/groups.dart';
 import 'package:poll_and_play/providers/state.dart';
 import 'package:poll_and_play/ui/dialog_button.dart';
+import 'package:poll_and_play/ui/loading_icon_button.dart';
 import 'package:poll_and_play/ui/text_input.dart';
 import 'package:poll_play_proto_gen/public.dart';
 import 'package:provider/provider.dart';
 
 class GroupPage extends StatefulWidget {
-  final Group group;
+  final $fixnum.Int64 groupID;
 
-  const GroupPage({super.key, required this.group});
+  const GroupPage({super.key, required this.groupID});
 
   @override
   State<GroupPage> createState() => _GroupPageState();
@@ -21,6 +24,8 @@ class _GroupPageState extends State<GroupPage> {
   @override
   Widget build(BuildContext context) {
     StateProvider stateProvider = Provider.of<StateProvider>(context);
+    GroupsProvider provider = Provider.of<GroupsProvider>(context);
+    final group = provider.groups.firstWhere((element) => element.id == widget.groupID);
 
     return Scaffold(
       appBar: AppBar(
@@ -30,9 +35,9 @@ class _GroupPageState extends State<GroupPage> {
         ),
         centerTitle: true,
         title: Text(
-          widget.group.name,
+          group.name,
         ),
-        actions: widget.group.owner == stateProvider.user?.id
+        actions: group.owner == stateProvider.user?.id
             ? [
                 IconButton(
                   icon: const Icon(Icons.edit),
@@ -43,35 +48,30 @@ class _GroupPageState extends State<GroupPage> {
                 IconButton(
                   icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                   onPressed: () {
-                    deleteGroupWithConfirmation(context, widget.group);
+                    deleteGroupWithConfirmation(context, group);
                     Navigator.pop(context);
                   },
                 ),
               ]
             : null,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // todo the same as for friends
-          // _showInviteMemberDialog(context);
-        },
-        child: const Icon(
-          Icons.person_add,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            MembersSearch(groupID: group.id),
+            MembersList(groupID: group.id),
+          ],
         ),
       ),
-      body: ListView.builder(
-          itemCount: widget.group.members.length,
-          itemBuilder: (context, index) => MemberTile(
-                member: widget.group.members[index],
-                group: widget.group,
-              )),
     );
   }
 
   void _showEditNameDialog(BuildContext context) {
-    TextEditingController nameInput = TextEditingController();
-    nameInput.text = widget.group.name;
     GroupsProvider provider = Provider.of<GroupsProvider>(context, listen: false);
+    final group = provider.groups.firstWhere((element) => element.id == widget.groupID);
+    TextEditingController nameInput = TextEditingController();
+    nameInput.text = group.name;
 
     showDialog<void>(
       context: context,
@@ -89,9 +89,9 @@ class _GroupPageState extends State<GroupPage> {
             DialogButton(
               text: 'Save',
               onPressed: () {
-                provider.updateGroup(widget.group.id, nameInput.text);
+                provider.updateGroup(group.id, nameInput.text);
                 setState(() {
-                  widget.group.name = nameInput.text;
+                  group.name = nameInput.text;
                 });
 
                 Navigator.pop(context);
@@ -112,6 +112,29 @@ class _GroupPageState extends State<GroupPage> {
   }
 }
 
+class MembersList extends StatelessWidget {
+  const MembersList({
+    super.key,
+    required this.groupID,
+  });
+
+  final $fixnum.Int64 groupID;
+
+  @override
+  Widget build(BuildContext context) {
+    GroupsProvider provider = Provider.of<GroupsProvider>(context);
+    final group = provider.groups.firstWhere((element) => element.id == groupID);
+
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: group.members.length,
+        itemBuilder: (context, index) => MemberTile(
+              member: group.members[index],
+              group: group,
+            ));
+  }
+}
+
 class MemberTile extends StatelessWidget {
   final GroupMember member;
   final Group group;
@@ -126,6 +149,7 @@ class MemberTile extends StatelessWidget {
   Widget build(BuildContext context) {
     StateProvider stateProvider = Provider.of<StateProvider>(context, listen: false);
 
+    // todo mark invited members separately
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       leading: CircleAvatar(
@@ -169,6 +193,43 @@ class MemberTile extends StatelessWidget {
             ),
           ],
         );
+      },
+    );
+  }
+}
+
+class MembersSearch extends StatelessWidget {
+  final $fixnum.Int64 groupID;
+
+  const MembersSearch({
+    super.key,
+    required this.groupID,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    GroupsProvider provider = Provider.of<GroupsProvider>(context, listen: false);
+
+    return SearchAnchor.bar(
+      suggestionsBuilder: (context, controller) {
+        return provider.searchMembers(groupID, controller.text).then((value) {
+          if (value.isEmpty) {
+            return [const ListTile(title: Text('No results'))];
+          }
+
+          return List<FriendTile>.generate(
+            value.length,
+            (index) => FriendTile(
+              friend: value[index],
+              button: LoadingIconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {
+                    provider.inviteToGroup(groupID, value[index].id).then((value) => controller.closeView(""));
+                  }),
+            ),
+            growable: false,
+          );
+        });
       },
     );
   }

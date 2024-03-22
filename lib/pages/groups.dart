@@ -162,7 +162,7 @@ class GroupTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GroupPage(group: group)),
+          MaterialPageRoute(builder: (context) => GroupPage(groupID: group.id)),
         );
       },
     );
