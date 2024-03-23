@@ -212,6 +212,7 @@ class MembersSearch extends StatelessWidget {
     GroupsProvider provider = Provider.of<GroupsProvider>(context, listen: false);
 
     return SearchAnchor.bar(
+      viewHintText: 'Search friends to invite',
       suggestionsBuilder: (context, controller) {
         return provider.searchMembers(groupID, controller.text).then((value) {
           if (value.isEmpty) {

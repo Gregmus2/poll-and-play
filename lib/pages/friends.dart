@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
 import 'package:poll_and_play/providers/friends.dart';
+import 'package:poll_and_play/ui/cross_platform_refresh.dart';
 import 'package:poll_and_play/ui/loading_icon_button.dart';
 import 'package:poll_play_proto_gen/public.dart';
 import 'package:provider/provider.dart';
@@ -40,24 +42,15 @@ class _FriendsPageState extends State<FriendsPage> {
   Widget build(BuildContext context) {
     FriendsProvider provider = Provider.of<FriendsProvider>(context);
 
-    return ScrollConfiguration(
-      behavior: ScrollConfiguration.of(context).copyWith(
-        physics: const BouncingScrollPhysics(),
-        dragDevices: {
-          PointerDeviceKind.touch,
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.trackpad
-        },
-      ),
-      child: RefreshIndicator(
-        onRefresh: provider.refresh,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              const FriendsSearch(),
-              ListView.builder(
-                  shrinkWrap: true,
+    return CrossPlatformRefreshIndicator(
+      onRefresh: provider.refresh,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const FriendsSearch(),
+            Expanded(
+              child: ListView.builder(
                   itemCount: provider.friends.length,
                   itemBuilder: (context, index) => FriendTile(
                       friend: provider.friends[index],
@@ -65,8 +58,8 @@ class _FriendsPageState extends State<FriendsPage> {
                         icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                         onPressed: () => provider.removeFriend(provider.friends[index].id),
                       ))),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -83,6 +76,7 @@ class FriendsSearch extends StatelessWidget {
     FriendsProvider provider = Provider.of<FriendsProvider>(context, listen: false);
 
     return SearchAnchor.bar(
+      viewHintText: 'Search users to add',
       suggestionsBuilder: (context, controller) {
         if (controller.text.length < 3) {
           return [const ListTile(title: Text('Type at least 3 letters'))];

@@ -6,6 +6,11 @@ Added:
 
 [//]: # (todo add version number in the app ui)
 
+Fixed:
+
+- duplicated group members
+- error on games refresh
+
 ## 0.3.0 (2024-03-22)
 
 Added:

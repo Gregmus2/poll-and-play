@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:poll_and_play/pages/page.dart' as page;
 import 'package:poll_and_play/providers/games.dart';
 import 'package:poll_and_play/providers/state.dart';
+import 'package:poll_and_play/ui/cross_platform_refresh.dart';
 import 'package:poll_and_play/ui/dialog_button.dart';
 import 'package:poll_and_play/ui/text_input.dart';
 import 'package:poll_play_proto_gen/public.dart';
@@ -102,25 +103,15 @@ class ListGames extends StatelessWidget {
   Widget build(BuildContext context) {
     GamesProvider gamesProvider = Provider.of<GamesProvider>(context);
 
-    return ScrollConfiguration(
-      behavior: ScrollConfiguration.of(context).copyWith(
-        physics: const BouncingScrollPhysics(),
-        dragDevices: {
-          PointerDeviceKind.touch,
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.trackpad
-        },
-      ),
-      child: RefreshIndicator(
-        onRefresh: gamesProvider.refresh,
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 0.7,
-          ),
-          itemCount: gamesProvider.games.length,
-          itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
+    return CrossPlatformRefreshIndicator(
+      onRefresh: gamesProvider.refresh,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 0.7,
         ),
+        itemCount: gamesProvider.games.length,
+        itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
       ),
     );
   }
