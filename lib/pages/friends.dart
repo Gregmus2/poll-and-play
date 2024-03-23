@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,19 +48,35 @@ class _FriendsPageState extends State<FriendsPage> {
           children: [
             const FriendsSearch(),
             Expanded(
-              child: ListView.builder(
-                  itemCount: provider.friends.length,
-                  itemBuilder: (context, index) => FriendTile(
-                      friend: provider.friends[index],
-                      button: LoadingIconButton(
-                        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
-                        onPressed: () => provider.removeFriend(provider.friends[index].id),
-                      ))),
+              child: ListFriends(friends: provider.friends),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+class ListFriends extends StatelessWidget {
+  const ListFriends({
+    super.key,
+    required this.friends,
+  });
+
+  final List<User> friends;
+
+  @override
+  Widget build(BuildContext context) {
+    FriendsProvider provider = Provider.of<FriendsProvider>(context, listen: false);
+
+    return ListView.builder(
+        itemCount: friends.length,
+        itemBuilder: (context, index) => FriendTile(
+            friend: friends[index],
+            button: LoadingIconButton(
+              icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+              onPressed: () => provider.removeFriend(friends[index].id),
+            )));
   }
 }
 
@@ -76,6 +90,7 @@ class FriendsSearch extends StatelessWidget {
     FriendsProvider provider = Provider.of<FriendsProvider>(context, listen: false);
 
     return SearchAnchor.bar(
+      barTrailing: const [Icon(Icons.person_add_alt_1)],
       viewHintText: 'Search users to add',
       suggestionsBuilder: (context, controller) {
         if (controller.text.length < 3) {

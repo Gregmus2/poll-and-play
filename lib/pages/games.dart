@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,17 +34,20 @@ class GamesPage extends StatelessWidget implements page.Page {
   @override
   Widget build(BuildContext context) {
     StateProvider stateProvider = Provider.of<StateProvider>(context);
+    GamesProvider gamesProvider = Provider.of<GamesProvider>(context);
 
     // todo local flutter search
-    return stateProvider.user!.steamId.hasValue() ? const ListGames() : Center(
-      // todo add reconnect option
-      child: ElevatedButton(
-        onPressed: () {
-          showConnectSteamDialog(context);
-        },
-        child: const Text("Connect Steam"),
-      ),
-    );
+    return stateProvider.user!.steamId.hasValue()
+        ? ListGames(games: gamesProvider.games)
+        : Center(
+            // todo add reconnect option
+            child: ElevatedButton(
+              onPressed: () {
+                showConnectSteamDialog(context);
+              },
+              child: const Text("Connect Steam"),
+            ),
+          );
   }
 
   void showConnectSteamDialog(BuildContext context) {
@@ -61,7 +62,8 @@ class GamesPage extends StatelessWidget implements page.Page {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text("Please enter your steam ID\n\nYou can find it in your profile URL\nhttps://steamcommunity.com/profiles/YOUR_STEAM_ID/"),
+              const Text(
+                  "Please enter your steam ID\n\nYou can find it in your profile URL\nhttps://steamcommunity.com/profiles/YOUR_STEAM_ID/"),
               EntityNameTextInput(
                 nameInput: nameInput,
                 isValid: (value) => true,
@@ -94,24 +96,80 @@ class GamesPage extends StatelessWidget implements page.Page {
   }
 }
 
-class ListGames extends StatelessWidget {
+class ListGames extends StatefulWidget {
+  final List<GameWithStat> games;
+
   const ListGames({
     super.key,
+    required this.games,
+  });
+
+  @override
+  State<ListGames> createState() => _ListGamesState();
+}
+
+class _ListGamesState extends State<ListGames> {
+  List<GameWithStat> _games = [];
+
+  @override
+  void initState() {
+    _games = widget.games;
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    GamesProvider gamesProvider = Provider.of<GamesProvider>(context, listen: false);
+
+    return CrossPlatformRefreshIndicator(
+      onRefresh: gamesProvider.refresh,
+      child: Column(
+        children: [
+          GamesSearch(
+            onChanged: (value) => setState(() {
+              _games = gamesProvider.search(value);
+            }),
+          ),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: _games.length,
+              itemBuilder: (context, index) => GameTile(game: _games[index]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class GamesSearch extends StatelessWidget {
+  final Function(String) onChanged;
+
+  const GamesSearch({
+    super.key,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    GamesProvider gamesProvider = Provider.of<GamesProvider>(context);
-
-    return CrossPlatformRefreshIndicator(
-      onRefresh: gamesProvider.refresh,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 0.7,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        decoration: const InputDecoration(
+          labelText: 'Search',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+            borderSide: BorderSide.none,
+          ),
+          prefixIcon: Icon(Icons.search),
+          filled: true,
         ),
-        itemCount: gamesProvider.games.length,
-        itemBuilder: (context, index) => GameTile(game: gamesProvider.games[index]),
+        onChanged: onChanged,
       ),
     );
   }

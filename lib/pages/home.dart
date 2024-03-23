@@ -32,6 +32,17 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
         appBar: AppBar(
+          leading: //version number
+              IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              showAboutDialog(
+                context: context,
+                applicationName: stateProvider.packageInfo.appName,
+                applicationVersion: stateProvider.packageInfo.version,
+              );
+            },
+          ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

@@ -4,7 +4,8 @@
 
 Added:
 
-[//]: # (todo add version number in the app ui)
+- added app info widget
+- added search on games page
 
 Fixed:
 

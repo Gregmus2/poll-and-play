@@ -31,4 +31,8 @@ class GamesProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+  
+  List<GameWithStat> search(String query) {
+    return _games.where((element) => element.game.name.toLowerCase().contains(query.toLowerCase())).toList();
+  }
 }
