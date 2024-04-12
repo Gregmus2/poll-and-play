@@ -3,12 +3,14 @@ import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/friends.dart';
+import 'package:poll_and_play/providers/provider.dart';
 import 'package:poll_play_proto_gen/public.dart' as proto;
 
-class FriendsProvider extends ChangeNotifier {
+class FriendsProvider extends ChangeNotifier implements Provider {
   final FriendsClient _client = FriendsClient(GlobalConfig().apiAddress.split(':'));
   late List<proto.User> _friends;
 
+  @override
   Future<void> init() async {
     if (FirebaseAuth.instance.currentUser == null) {
       return;

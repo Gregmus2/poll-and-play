@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:poll_and_play/adapters/cloud_messaging.dart';
 import 'package:poll_and_play/app.dart';
 import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/firebase_options.dart';
@@ -21,19 +22,23 @@ Future<void> _runApp(Widget app) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  StateProvider stateProvider = StateProvider();
-  await stateProvider.init();
   UserClient userClient = UserClient(GlobalConfig().apiAddress.split(':'));
   FriendsProvider friendsProvider = FriendsProvider();
   GroupsProvider groupsProvider = GroupsProvider();
   RegistrationClient registrationClient = RegistrationClient(GlobalConfig().apiAddress.split(':'));
   GamesProvider gamesProvider = GamesProvider();
+  CloudMessaging messaging = CloudMessaging(userClient);
+  init() async {
+    await Future.wait([
+      friendsProvider.init(),
+      groupsProvider.init(),
+      gamesProvider.init(),
+      messaging.init(),
+    ]);
+  }
 
-  await Future.wait([
-    friendsProvider.init(),
-    groupsProvider.init(),
-    gamesProvider.init(),
-  ]);
+  StateProvider stateProvider = StateProvider(init);
+  await stateProvider.init();
 
   runApp(
     MultiProvider(

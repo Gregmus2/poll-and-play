@@ -3,12 +3,14 @@ import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/groups.dart';
+import 'package:poll_and_play/providers/provider.dart';
 import 'package:poll_play_proto_gen/public.dart' as proto;
 
-class GroupsProvider extends ChangeNotifier {
+class GroupsProvider extends ChangeNotifier implements Provider {
   final GroupsClient _client = GroupsClient(GlobalConfig().apiAddress.split(':'));
   late List<proto.Group> _groups;
 
+  @override
   Future<void> init() async {
     if (FirebaseAuth.instance.currentUser == null) {
       return;

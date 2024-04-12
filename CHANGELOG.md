@@ -1,6 +1,12 @@
 # CHANGELOG.md
 
-## 0.4.0 (unreleased)
+## 0.5.0 (unreleased)
+
+Added:
+- foreground notifications support
+- user device registration
+
+## 0.4.0 (2024-03-23)
 
 Added:
 

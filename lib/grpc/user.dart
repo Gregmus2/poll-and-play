@@ -34,4 +34,14 @@ class UserClient {
       print('Error updating user: $e');
     }
   }
+
+  Future<void> registerDevice(String? token, Platform platform) async {
+    try {
+      await _client.registerDevice(RegisterDeviceRequest(token: token, platform: platform),
+          options: CallOptions(providers: [Authenticator.authenticate]));
+    } catch (e) {
+      // todo handle properly
+      print('Error registering device: $e');
+    }
+  }
 }

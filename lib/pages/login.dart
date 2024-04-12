@@ -105,9 +105,6 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _updateUser(BuildContext context) async {
     StateProvider stateProvider = Provider.of<StateProvider>(context, listen: false);
     RegistrationClient registrationClient = Provider.of<RegistrationClient>(context, listen: false);
-    FriendsProvider friendsProvider = Provider.of<FriendsProvider>(context, listen: false);
-    GamesProvider gamesProvider = Provider.of<GamesProvider>(context, listen: false);
-    GroupsProvider groupsProvider = Provider.of<GroupsProvider>(context, listen: false);
 
     final GoogleSignInAuthentication googleAuth = await _googleUser!.authentication;
 
@@ -122,12 +119,6 @@ class _LoginPageState extends State<LoginPage> {
       await registrationClient.register(
           userData.displayName ?? "", userData.email, userData.uid, userData.photoURL ?? "");
     }
-
-    await Future.wait([
-      friendsProvider.init(),
-      groupsProvider.init(),
-      gamesProvider.init(),
-    ]);
 
     // after user updates in state provider, it notify app page about that to rebuild body with HomePage
     stateProvider.initUser();

@@ -5,6 +5,7 @@ class GlobalConfig {
   late String apiAddress;
   late String steamAPIKey;
   late bool secureTransport;
+  late String vapidKey;
 
   GlobalConfig._internal() {
     const String clientID = String.fromEnvironment('CLIENT_ID');
@@ -26,6 +27,12 @@ class GlobalConfig {
     this.steamAPIKey = steamAPIKey;
 
     secureTransport = const bool.fromEnvironment('SECURE_TRANSPORT');
+
+    const String vapidKey = String.fromEnvironment('VAPID_KEY');
+    if (vapidKey.isEmpty) {
+      throw AssertionError('VAPID_KEY is not set');
+    }
+    this.vapidKey = vapidKey;
   }
 
   factory GlobalConfig() {
