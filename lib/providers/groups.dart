@@ -7,8 +7,10 @@ import 'package:poll_and_play/providers/provider.dart';
 import 'package:poll_play_proto_gen/public.dart' as proto;
 
 class GroupsProvider extends ChangeNotifier implements Provider {
-  final GroupsClient _client = GroupsClient(GlobalConfig().apiAddress.split(':'));
+  final GroupsClient _client;
   late List<proto.Group> _groups;
+
+  GroupsProvider(this._client);
 
   @override
   Future<void> init() async {

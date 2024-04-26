@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/games.dart';
 import 'package:poll_and_play/providers/provider.dart';
 import 'package:poll_play_proto_gen/public.dart';
 
 class GamesProvider extends ChangeNotifier implements Provider {
-  final GamesClient _client = GamesClient(GlobalConfig().apiAddress.split(':'));
+  final GamesClient _client;
   late List<GameWithStat> _games;
+
+  GamesProvider(this._client);
 
   @override
   Future<void> init() async {

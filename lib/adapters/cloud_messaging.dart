@@ -21,10 +21,8 @@ class CloudMessaging {
       sound: true,
     );
 
-    if (kIsWeb) {
-      final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: GlobalConfig().vapidKey);
-      _client.registerDevice(fcmToken, Platform.PLATFORM_WEB);
-    }
+    final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: kIsWeb ? GlobalConfig().vapidKey : null);
+    _client.registerDevice(fcmToken, kIsWeb ? Platform.PLATFORM_WEB : Platform.PLATFORM_ANDROID);
 
     _listenForToken();
     _listenForMessage();
@@ -32,6 +30,7 @@ class CloudMessaging {
 
   void _listenForToken() async {
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+      // todo remove old token
       _client.registerDevice(fcmToken, Platform.PLATFORM_ANDROID);
     }).onError((err) {
       // todo handle err
@@ -52,4 +51,6 @@ class CloudMessaging {
       }
     });
   }
+
+  // todo https://firebase.google.com/docs/cloud-messaging/flutter/receive#handling_interaction open target page
 }

@@ -1,6 +1,5 @@
 import 'package:fixnum/fixnum.dart' as $fixnum;
-import 'package:grpc/grpc_or_grpcweb.dart';
-import 'package:poll_and_play/config.dart';
+import 'package:grpc/grpc.dart';
 import 'package:poll_and_play/grpc/authenticator.dart';
 import 'package:poll_play_proto_gen/google/protobuf/empty.pb.dart';
 import 'package:poll_play_proto_gen/public.dart';
@@ -8,9 +7,7 @@ import 'package:poll_play_proto_gen/public.dart';
 class GroupsClient {
   late GroupsServiceClient _client;
 
-  GroupsClient(List<String> address) {
-    final channel = GrpcOrGrpcWebClientChannel.toSingleEndpoint(
-        host: address[0], port: int.parse(address[1]), transportSecure: GlobalConfig().secureTransport);
+  GroupsClient(ClientChannel channel) {
     _client = GroupsServiceClient(channel);
   }
 

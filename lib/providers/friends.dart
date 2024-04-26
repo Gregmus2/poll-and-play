@@ -7,8 +7,10 @@ import 'package:poll_and_play/providers/provider.dart';
 import 'package:poll_play_proto_gen/public.dart' as proto;
 
 class FriendsProvider extends ChangeNotifier implements Provider {
-  final FriendsClient _client = FriendsClient(GlobalConfig().apiAddress.split(':'));
+  final FriendsClient _client;
   late List<proto.User> _friends;
+
+  FriendsProvider(this._client);
 
   @override
   Future<void> init() async {
