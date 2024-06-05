@@ -1,12 +1,15 @@
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:poll_and_play/grpc/events.dart';
 import 'package:poll_and_play/pages/games.dart';
+import 'package:poll_and_play/providers/events.dart';
 import 'package:poll_and_play/providers/friends.dart';
 import 'package:poll_and_play/providers/games.dart';
 import 'package:poll_and_play/providers/groups.dart';
 import 'package:poll_play_proto_gen/public.dart';
 import 'package:provider/provider.dart';
+import 'package:word_generator/word_generator.dart';
 
 class EventCreatePage extends StatefulWidget {
   const EventCreatePage({super.key});
@@ -24,6 +27,9 @@ class _EventCreatePageState extends State<EventCreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    EventsClient client = Provider.of<EventsClient>(context, listen: false);
+    EventsProvider provider = Provider.of<EventsProvider>(context, listen: false);
+
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -37,9 +43,19 @@ class _EventCreatePageState extends State<EventCreatePage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  // todo create event
-
-                  Navigator.pop(context);
+                  final name = "${DateFormat('EEEE').format(_dateTime)}'s ${WordGenerator().randomVerb()}";
+                  client
+                      .createEvent(
+                          name,
+                          _dateTime,
+                          _target.type == Target.users ? EventType.EVENT_TYPE_PRIVATE : EventType.EVENT_TYPE_GROUP,
+                          _target.type == Target.group ? _target.id.first : null,
+                          _target.type == Target.users ? _target.id : [],
+                          _selectedGames.map((e) => e.game.id).toList())
+                      .then((value) {
+                    provider.refresh();
+                    Navigator.pop(context);
+                  });
                 },
                 icon: const Icon(Icons.check))
           ],

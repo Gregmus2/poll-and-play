@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/user.dart';
 import 'package:poll_and_play/providers/provider.dart';
 import 'package:poll_play_proto_gen/public.dart' as proto;

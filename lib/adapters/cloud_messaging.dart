@@ -52,5 +52,5 @@ class CloudMessaging {
     });
   }
 
-  // todo https://firebase.google.com/docs/cloud-messaging/flutter/receive#handling_interaction open target page
+// todo https://firebase.google.com/docs/cloud-messaging/flutter/receive#handling_interaction open target page
 }

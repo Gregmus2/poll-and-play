@@ -1,7 +1,5 @@
 import 'package:fixnum/fixnum.dart' as $fixnum;
-import 'package:grpc/grpc.dart';
 import 'package:grpc/grpc_or_grpcweb.dart';
-import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/authenticator.dart';
 import 'package:poll_play_proto_gen/google/protobuf/empty.pb.dart';
 import 'package:poll_play_proto_gen/public.dart';
@@ -9,7 +7,7 @@ import 'package:poll_play_proto_gen/public.dart';
 class FriendsClient {
   late FriendsServiceClient _client;
 
-  FriendsClient(ClientChannel channel) {
+  FriendsClient(GrpcOrGrpcWebClientChannel channel) {
     _client = FriendsServiceClient(channel);
   }
 

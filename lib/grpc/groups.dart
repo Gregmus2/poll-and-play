@@ -1,5 +1,5 @@
 import 'package:fixnum/fixnum.dart' as $fixnum;
-import 'package:grpc/grpc.dart';
+import 'package:grpc/grpc_or_grpcweb.dart';
 import 'package:poll_and_play/grpc/authenticator.dart';
 import 'package:poll_play_proto_gen/google/protobuf/empty.pb.dart';
 import 'package:poll_play_proto_gen/public.dart';
@@ -7,7 +7,7 @@ import 'package:poll_play_proto_gen/public.dart';
 class GroupsClient {
   late GroupsServiceClient _client;
 
-  GroupsClient(ClientChannel channel) {
+  GroupsClient(GrpcOrGrpcWebClientChannel channel) {
     _client = GroupsServiceClient(channel);
   }
 
@@ -97,7 +97,8 @@ class GroupsClient {
   Future<List<User>> searchMembers($fixnum.Int64 groupId, String username) async {
     SearchFriendsToInviteRequest request = SearchFriendsToInviteRequest(groupExcluded: groupId, username: username);
     try {
-      final response = await _client.searchFriendsToInvite(request, options: CallOptions(providers: [Authenticator.authenticate]));
+      final response =
+          await _client.searchFriendsToInvite(request, options: CallOptions(providers: [Authenticator.authenticate]));
 
       return response.users;
     } catch (e) {

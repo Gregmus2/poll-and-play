@@ -31,4 +31,20 @@ class EventsProvider extends ChangeNotifier implements Provider {
 
     notifyListeners();
   }
+
+  Future<void> createEvent(String name, DateTime startTime, proto.EventType type, $fixnum.Int64? groupId,
+      List<$fixnum.Int64> userIds, List<$fixnum.Int64> gameIds) async {
+    await _client.createEvent(name, startTime, type, groupId, userIds, gameIds);
+    await refresh();
+  }
+
+  Future<void> answerEvent($fixnum.Int64 eventId, bool accept, List<$fixnum.Int64> gameIds, DateTime? startTime) async {
+    await _client.answerEvent(eventId, accept, gameIds, startTime);
+    await refresh();
+  }
+
+  Future<void> deleteEvent($fixnum.Int64 eventId) async {
+    await _client.deleteEvent(eventId);
+    await refresh();
+  }
 }

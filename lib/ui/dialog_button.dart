@@ -23,3 +23,10 @@ class DialogButton extends StatelessWidget {
         child: Text(text, style: TextStyle(color: color, fontSize: 15)));
   }
 }
+
+List<Widget> simpleDialogButtons(BuildContext context, {required VoidCallback ok, required VoidCallback cancel}) {
+  return [
+    DialogButton(text: 'OK', onPressed: ok, color: Theme.of(context).colorScheme.primary),
+    DialogButton(text: 'CANCEL', onPressed: cancel, color: Theme.of(context).colorScheme.error)
+  ];
+}

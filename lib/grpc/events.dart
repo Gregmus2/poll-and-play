@@ -1,25 +1,32 @@
 import 'package:fixnum/fixnum.dart' as $fixnum;
-import 'package:grpc/grpc.dart';
 import 'package:grpc/grpc_or_grpcweb.dart';
-import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/authenticator.dart';
 import 'package:poll_play_proto_gen/google.dart';
 import 'package:poll_play_proto_gen/public.dart';
-import 'package:poll_play_proto_gen/public/events.pb.dart';
-import 'package:poll_play_proto_gen/public/events.pbgrpc.dart';
 
 class Event {
-  $fixnum.Int64? id;
-  String? name;
-  $fixnum.Int64? startTime;
-  EventType? type;
-  Int64Value? groupId;
+  final $fixnum.Int64 id;
+  final String name;
+  final $fixnum.Int64 startTime;
+  final EventType type;
+  final Int64Value? groupId;
+  final $fixnum.Int64 ownerId;
+  final MemberStatus status;
+
+  Event(
+      {required this.id,
+      required this.name,
+      required this.startTime,
+      required this.type,
+      this.groupId,
+      required this.ownerId,
+      required this.status});
 }
 
 class EventsClient {
   late EventsServiceClient _client;
 
-  EventsClient(ClientChannel channel) {
+  EventsClient(GrpcOrGrpcWebClientChannel channel) {
     _client = EventsServiceClient(channel);
   }
 
@@ -40,7 +47,7 @@ class EventsClient {
       await _client.createEvent(
           CreateEventRequest(
               name: name,
-              startTime: $fixnum.Int64(startTime.millisecondsSinceEpoch),
+              startTime: $fixnum.Int64(startTime.millisecondsSinceEpoch ~/ 1000),
               type: type,
               groupId: groupId != null ? Int64Value(value: groupId) : null,
               userIds: userIds,
@@ -52,14 +59,14 @@ class EventsClient {
     }
   }
 
-  Future<void> answerEvent($fixnum.Int64 eventId, bool accept, List<$fixnum.Int64> gameIds, DateTime startTime) async {
+  Future<void> answerEvent($fixnum.Int64 eventId, bool accept, List<$fixnum.Int64> gameIds, DateTime? startTime) async {
     try {
       await _client.answerEvent(
           AnswerEventRequest(
               eventId: eventId,
               accept: accept,
               gameIds: gameIds,
-              startTime: $fixnum.Int64(startTime.millisecondsSinceEpoch)),
+              startTime: startTime == null ? null : $fixnum.Int64(startTime.millisecondsSinceEpoch)),
           options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly
@@ -67,28 +74,28 @@ class EventsClient {
     }
   }
 
-  Future<Event> getEvent($fixnum.Int64 eventId) async {
+  Future<Event?> getEvent($fixnum.Int64 eventId) async {
     try {
-      final response = await _client.getEvent(
-          GetEventRequest(eventId: eventId),
+      final response = await _client.getEvent(GetEventRequest(eventId: eventId),
           options: CallOptions(providers: [Authenticator.authenticate]));
-      return Event()
-        ..id = response.id
-        ..name = response.name
-        ..startTime = response.startTime
-        ..type = response.type
-        ..groupId = response.groupId;
+      return Event(
+          id: response.id,
+          name: response.name,
+          startTime: response.startTime,
+          type: response.type,
+          groupId: response.groupId,
+          ownerId: response.ownerId,
+          status: response.currentUserStatus);
     } catch (e) {
       // todo handle properly
       print('Error listing groups: $e');
-      return Event();
+      return null;
     }
   }
 
   Future<List<GetEventGamesResponse_Game>> getEventGames($fixnum.Int64 eventId) async {
     try {
-      final response = await _client.getEventGames(
-          GetEventRequest(eventId: eventId),
+      final response = await _client.getEventGames(GetEventRequest(eventId: eventId),
           options: CallOptions(providers: [Authenticator.authenticate]));
 
       return response.games;
@@ -102,8 +109,7 @@ class EventsClient {
 
   Future<List<GetEventMembersResponse_EventMember>> getEventMembers($fixnum.Int64 eventId) async {
     try {
-      final response = await _client.getEventMembers(
-          GetEventRequest(eventId: eventId),
+      final response = await _client.getEventMembers(GetEventRequest(eventId: eventId),
           options: CallOptions(providers: [Authenticator.authenticate]));
 
       return response.members;
@@ -117,8 +123,7 @@ class EventsClient {
 
   Future<void> inviteUser($fixnum.Int64 eventId, $fixnum.Int64 userId) async {
     try {
-      await _client.inviteUser(
-          InviteUserRequest(eventId: eventId, userId: userId),
+      await _client.inviteUser(InviteUserRequest(eventId: eventId, userId: userId),
           options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly
@@ -128,8 +133,7 @@ class EventsClient {
 
   Future<void> removeUser($fixnum.Int64 eventId, $fixnum.Int64 userId) async {
     try {
-      await _client.removeUser(
-          InviteUserRequest(eventId: eventId, userId: userId),
+      await _client.removeUser(InviteUserRequest(eventId: eventId, userId: userId),
           options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly
@@ -140,10 +144,17 @@ class EventsClient {
   Future<void> updateEvent($fixnum.Int64 eventId, String? name, DateTime startTime) async {
     try {
       await _client.updateEvent(
-          UpdateEventRequest(
-              id: eventId,
-              name: name,
-              startTime: $fixnum.Int64(startTime.millisecondsSinceEpoch)),
+          UpdateEventRequest(id: eventId, name: name, startTime: $fixnum.Int64(startTime.millisecondsSinceEpoch)),
+          options: CallOptions(providers: [Authenticator.authenticate]));
+    } catch (e) {
+      // todo handle properly
+      print('Error listing groups: $e');
+    }
+  }
+
+  Future<void> deleteEvent($fixnum.Int64 eventId) async {
+    try {
+      await _client.deleteEvent(GetEventRequest(eventId: eventId),
           options: CallOptions(providers: [Authenticator.authenticate]));
     } catch (e) {
       // todo handle properly

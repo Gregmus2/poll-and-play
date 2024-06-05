@@ -47,7 +47,9 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CachedNetworkImage(
-                  imageUrl: stateProvider.user!.picture.value == "" ? FirebaseAuth.instance.currentUser!.photoURL! : stateProvider.user!.picture.value,
+                  imageUrl: stateProvider.user!.picture.value == ""
+                      ? FirebaseAuth.instance.currentUser!.photoURL!
+                      : stateProvider.user!.picture.value,
                   width: 40,
                   height: 40,
                   fit: BoxFit.cover,

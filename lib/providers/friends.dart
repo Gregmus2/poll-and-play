@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:flutter/material.dart';
-import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/friends.dart';
 import 'package:poll_and_play/providers/provider.dart';
 import 'package:poll_play_proto_gen/public.dart' as proto;
