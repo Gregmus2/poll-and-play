@@ -36,6 +36,9 @@ class GroupsPage extends StatelessWidget implements page.Page {
       );
 
   @override
+  void onSelected(BuildContext context) {}
+
+  @override
   Widget build(BuildContext context) {
     GroupsProvider provider = Provider.of<GroupsProvider>(context);
 

@@ -17,8 +17,16 @@ class EventsPage extends StatelessWidget implements page.Page {
   }
 
   @override
-  Icon getUnselectedIcon(BuildContext context) {
-    return const Icon(Icons.event_outlined);
+  Widget getUnselectedIcon(BuildContext context) {
+    EventsProvider provider = Provider.of<EventsProvider>(context);
+    Icon icon = const Icon(Icons.event_outlined);
+
+    return provider.updateSeen ? icon : Badge(smallSize: 10, child: icon);
+  }
+
+  @override
+  void onSelected(BuildContext context) {
+    Provider.of<EventsProvider>(context, listen: false).updateSeen = true;
   }
 
   @override
@@ -102,9 +110,9 @@ class EventTile extends StatelessWidget {
               width: 100,
               child: MultiProgress(
                 items: [
-                  ProgressItem(e.pendingAmount as double, Colors.amber),
-                  ProgressItem(e.rejectedAmount as double, Colors.red),
-                  ProgressItem(e.acceptedAmount as double, Colors.green),
+                  ProgressItem(e.pendingAmount.toDouble(), Colors.amber),
+                  ProgressItem(e.rejectedAmount.toDouble(), Colors.red),
+                  ProgressItem(e.acceptedAmount.toDouble(), Colors.green),
                 ],
               )),
         ],

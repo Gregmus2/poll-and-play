@@ -29,6 +29,9 @@ class FriendsPage extends StatefulWidget implements page.Page {
   Widget? floatingActionButton(BuildContext context) => null;
 
   @override
+  void onSelected(BuildContext context) {}
+
+  @override
   State<FriendsPage> createState() => _FriendsPageState();
 }
 

@@ -32,6 +32,9 @@ class GamesPage extends StatelessWidget implements page.Page {
   Widget? floatingActionButton(BuildContext context) => null;
 
   @override
+  void onSelected(BuildContext context) {}
+
+  @override
   Widget build(BuildContext context) {
     StateProvider stateProvider = Provider.of<StateProvider>(context);
     GamesProvider gamesProvider = Provider.of<GamesProvider>(context);

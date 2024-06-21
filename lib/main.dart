@@ -45,7 +45,7 @@ Future<void> _runApp(Widget app) async {
   GroupsProvider groupsProvider = GroupsProvider(groupsClient);
   GamesProvider gamesProvider = GamesProvider(gamesClient);
   EventsProvider eventsProvider = EventsProvider(eventsClient);
-  CloudMessaging messaging = CloudMessaging(userClient);
+  CloudMessaging messaging = CloudMessaging(userClient, eventsProvider);
   init() async {
     await Future.wait([
       friendsProvider.init(),

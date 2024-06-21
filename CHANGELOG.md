@@ -6,6 +6,7 @@ Added:
 - foreground notifications support
 - user device registration
 - move to single grpc channel
+- handle foreground notifications
 
 ## 0.4.0 (2024-03-23)
 

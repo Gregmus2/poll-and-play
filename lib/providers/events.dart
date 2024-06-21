@@ -8,6 +8,7 @@ import 'package:poll_play_proto_gen/public.dart' as proto;
 class EventsProvider extends ChangeNotifier implements Provider {
   final EventsClient _client;
   late List<proto.ListEventsResponse_EventShort> _events;
+  bool _updateSeen = true;
 
   EventsProvider(this._client);
 
@@ -31,6 +32,18 @@ class EventsProvider extends ChangeNotifier implements Provider {
 
     notifyListeners();
   }
+
+  set updateSeen (bool value) {
+    _updateSeen = value;
+
+    notifyListeners();
+  }
+
+  set updateSeenSilent (bool value) {
+    _updateSeen = value;
+  }
+
+  bool get updateSeen => _updateSeen;
 
   Future<void> createEvent(String name, DateTime startTime, proto.EventType type, $fixnum.Int64? groupId,
       List<$fixnum.Int64> userIds, List<$fixnum.Int64> gameIds) async {

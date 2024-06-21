@@ -78,6 +78,10 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (int index) => setState(() {
             pageIndex = index;
+
+            if (index == 2) {
+              _pages[index].onSelected(context);
+            }
           }),
           selectedIndex: pageIndex,
           elevation: 1,

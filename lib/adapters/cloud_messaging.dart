@@ -2,13 +2,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:poll_and_play/config.dart';
 import 'package:poll_and_play/grpc/user.dart';
+import 'package:poll_and_play/providers/events.dart';
 import 'package:poll_play_proto_gen/public.dart';
 
 // todo add background messages for android
 class CloudMessaging {
   final UserClient _client;
+  final EventsProvider _eventsProvider;
 
-  CloudMessaging(this._client);
+  CloudMessaging(this._client, this._eventsProvider);
 
   Future<void> init() async {
     await FirebaseMessaging.instance.requestPermission(
@@ -41,10 +43,12 @@ class CloudMessaging {
   void _listenForMessage() async {
     // foreground messages handler
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
 
-      // todo handle notifications
+      if (message.data['event_id'] != null) {
+        _eventsProvider.refresh();
+        _eventsProvider.updateSeen = false;
+      }
 
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');
